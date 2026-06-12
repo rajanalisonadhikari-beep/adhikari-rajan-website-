@@ -235,7 +235,6 @@ footer{background:var(--dark2);text-align:center;padding:7rem 5rem 3rem;}
   *{animation-duration:0.01ms!important;transition-duration:0.01ms!important;}
 }
 </style>
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 </head>
 <body>
 
@@ -351,8 +350,8 @@ footer{background:var(--dark2);text-align:center;padding:7rem 5rem 3rem;}
       <p class="eyebrow">Discover</p>
       <h2 class="section-title">Our <em>Story</em></h2>
       <div class="gold-rule"></div>
-      <p>Born from a passion for precision and personal style, Thade Adhikari has spent over a decade mastering the blade. Every session is a ritual — a conversation between craft and identity.</p>
-      <p>From the classic fade to the boldest modern cuts, each service is delivered with patience, skill, and an obsession for detail that only comes from true dedication to the craft.</p>
+      <p id="story-p1">Born from a passion for precision and personal style, Thade Adhikari has spent over a decade mastering the blade. Every session is a ritual — a conversation between craft and identity.</p>
+      <p id="story-p2">From the classic fade to the boldest modern cuts, each service is delivered with patience, skill, and an obsession for detail that only comes from true dedication to the craft.</p>
       <div class="story-stats">
         <div>
           <div class="stat-num">500+</div>
@@ -422,11 +421,11 @@ footer{background:var(--dark2);text-align:center;padding:7rem 5rem 3rem;}
       <p class="eyebrow">Signature</p>
       <h2 class="section-title">The <em>Freestyle Cut</em></h2>
       <div class="gold-rule"></div>
-      <p>Our house signature — a sculpted mid-fade with a defined hard part and textured crop on top. Engineered for men who want structure without sacrifice, edge without effort.</p>
-      <p>Finished with a hot towel, straight razor lineup, and premium styling. One cut. Total transformation.</p>
+      <p id="sig-p1">Our house signature — a sculpted mid-fade with a defined hard part and textured crop on top. Engineered for men who want structure without sacrifice, edge without effort.</p>
+      <p id="sig-p2">Finished with a hot towel, straight razor lineup, and premium styling. One cut. Total transformation.</p>
       <div class="price-box">
         <div class="price-label">Starting from</div>
-        <div class="price-val">Rs. 100</div>
+        <div class="price-val" id="price-val">Rs. 100</div>
       </div>
     </div>
   </div>
@@ -443,13 +442,13 @@ footer{background:var(--dark2);text-align:center;padding:7rem 5rem 3rem;}
     <div class="testi-cards">
       <div class="testi-card reveal">
         <span class="testi-quote-mark">"</span>
-        <p class="testi-text">Never thought a haircut could change how I carry myself. Thade took one look and knew exactly what I needed. Left the chair a completely different man.</p>
-        <p class="testi-author">— Arjun Thapa</p>
+        <p class="testi-text" id="testi1-text">Never thought a haircut could change how I carry myself. Thade took one look and knew exactly what I needed. Left the chair a completely different man.</p>
+        <p class="testi-author" id="testi1-author">— Arjun Thapa</p>
       </div>
       <div class="testi-card reveal">
         <span class="testi-quote-mark">"</span>
-        <p class="testi-text">The cleanest fade I've ever had. Precise, professional, and the vibe is immaculate. This is my spot forever. No one else touches my hair.</p>
-        <p class="testi-author">— Siddharth Rana</p>
+        <p class="testi-text" id="testi2-text">The cleanest fade I've ever had. Precise, professional, and the vibe is immaculate. This is my spot forever. No one else touches my hair.</p>
+        <p class="testi-author" id="testi2-author">— Siddharth Rana</p>
       </div>
     </div>
   </div>
@@ -464,18 +463,18 @@ footer{background:var(--dark2);text-align:center;padding:7rem 5rem 3rem;}
   <div class="footer-contact">
     <div class="footer-contact-item">
       <div class="label">Phone</div>
-      <div class="value"><a href="tel:+9779808016710">+977 9808016710</a></div>
+      <div class="value"><a id="contact-phone" href="tel:+9779808016710">+977 9808016710</a></div>
     </div>
     <div class="footer-contact-item">
       <div class="label">Instagram</div>
-      <div class="value"><a href="https://instagram.com/razanz_40" target="_blank">@razanz_40</a></div>
+      <div class="value"><a id="contact-insta" class="js-insta" href="https://instagram.com/razanz_40" target="_blank">@razanz_40</a></div>
     </div>
     <div class="footer-contact-item">
       <div class="label">Location</div>
       <div class="value">Kathmandu, Nepal</div>
     </div>
   </div>
-  <a href="https://instagram.com/razanz_40" target="_blank" class="insta-link">
+  <a href="https://instagram.com/razanz_40" target="_blank" class="insta-link js-insta">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor"/></svg>
     Follow on Instagram
   </a>
@@ -700,6 +699,36 @@ window.addEventListener('scroll',()=>{
     el.style.transform=`translateY(${y*(0.1+i*0.05)}px)`;
   });
 });
+</script>
+<!-- ── EDITABLE CONTENT (managed from /admin) — falls back to defaults if unavailable ── -->
+<script>
+fetch('content.json?v=' + Date.now())
+  .then(function(r){ return r.ok ? r.json() : null; })
+  .then(function(c){
+    if(!c) return;
+    function set(id, val){ var el=document.getElementById(id); if(el && val) el.textContent = val; }
+    set('hero-ey', c.hero_eyebrow);
+    set('hl1', c.hero_line1);
+    if(c.hero_line2){ var h2=document.getElementById('hl2'); if(h2) h2.innerHTML='<em>'+c.hero_line2+'</em>'; }
+    set('hl3', c.hero_line3);
+    set('hero-desc', c.hero_desc);
+    set('story-p1', c.story_p1);
+    set('story-p2', c.story_p2);
+    set('sig-p1', c.signature_p1);
+    set('sig-p2', c.signature_p2);
+    set('price-val', c.price);
+    set('testi1-text', c.testi1_text);
+    set('testi2-text', c.testi2_text);
+    if(c.testi1_author){ var a1=document.getElementById('testi1-author'); if(a1) a1.textContent='— '+c.testi1_author; }
+    if(c.testi2_author){ var a2=document.getElementById('testi2-author'); if(a2) a2.textContent='— '+c.testi2_author; }
+    if(c.phone){ var ph=document.getElementById('contact-phone'); if(ph){ ph.textContent=c.phone; ph.setAttribute('href','tel:'+c.phone.replace(/\s+/g,'')); } }
+    if(c.instagram_handle){
+      var handle=c.instagram_handle.replace(/^@/,'');
+      var ih=document.getElementById('contact-insta'); if(ih) ih.textContent='@'+handle;
+      document.querySelectorAll('.js-insta').forEach(function(a){ a.setAttribute('href','https://instagram.com/'+handle); });
+    }
+  })
+  .catch(function(){});
 </script>
 </body>
 </html>
