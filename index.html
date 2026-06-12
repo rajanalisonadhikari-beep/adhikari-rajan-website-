@@ -280,16 +280,16 @@ footer{background:var(--dark2);text-align:center;padding:7rem 5rem 3rem;}
 
   <!-- Floating tool images -->
   <div class="hero-float float-1">
-    <img src="https://i.pinimg.com/webp/736x/a0/5d/be/a05dbe23dfb723289700831eed4ccdb3.webp" alt="" />
+    <img id="img-float1" src="https://i.pinimg.com/webp/736x/a0/5d/be/a05dbe23dfb723289700831eed4ccdb3.webp" alt="" />
   </div>
   <div class="hero-float float-2">
-    <img src="https://images.unsplash.com/photo-1622296089863-a8f15b6df1a4?w=300&q=70" alt="" />
+    <img id="img-float2" src="https://images.unsplash.com/photo-1622296089863-a8f15b6df1a4?w=300&q=70" alt="" />
   </div>
   <div class="hero-float float-3">
-    <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=300&q=70" alt="" />
+    <img id="img-float3" src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=300&q=70" alt="" />
   </div>
   <div class="hero-float float-4">
-    <img src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=300&q=70" alt="" />
+    <img id="img-float4" src="https://images.unsplash.com/photo-1605497788044-5a32c7078486?w=300&q=70" alt="" />
   </div>
 
   <div class="hero-content">
@@ -338,7 +338,7 @@ footer{background:var(--dark2);text-align:center;padding:7rem 5rem 3rem;}
   <div class="story-wrap">
     <div class="story-img-wrap reveal-left">
       <div class="story-img-main">
-        <img src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=800&q=80" alt="Barber at work" />
+        <img id="img-story" src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=800&q=80" alt="Barber at work" />
       </div>
       <div class="story-frame"></div>
       <div class="story-badge">
@@ -707,6 +707,12 @@ fetch('content.json?v=' + Date.now())
   .then(function(c){
     if(!c) return;
     function set(id, val){ var el=document.getElementById(id); if(el && val) el.textContent = val; }
+    function setImg(id, val){ var el=document.getElementById(id); if(el && val) el.src = val; }
+    setImg('img-story', c.img_story);
+    setImg('img-float1', c.img_float1);
+    setImg('img-float2', c.img_float2);
+    setImg('img-float3', c.img_float3);
+    setImg('img-float4', c.img_float4);
     set('hero-ey', c.hero_eyebrow);
     set('hl1', c.hero_line1);
     if(c.hero_line2){ var h2=document.getElementById('hl2'); if(h2) h2.innerHTML='<em>'+c.hero_line2+'</em>'; }
