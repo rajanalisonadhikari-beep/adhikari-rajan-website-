@@ -33,12 +33,26 @@ site_url: https://adhikari-rajan.com.np
 media_folder: "images/uploads"
 
 collections:
-  - name: "pages"
-    label: "Pages"
+  - name: "site"
+    label: "Website Content"
     files:
       - label: "Home Page"
         name: "home"
-        file: "index.html"
+        file: "content.json"
         fields:
-          - {label: "Title", name: "title", widget: "string"}
-          - {label: "Body", name: "body", widget: "markdown"}
+          - { label: "Top small heading", name: "hero_eyebrow", widget: "string" }
+          - { label: "Big title — line 1", name: "hero_line1", widget: "string" }
+          - { label: "Big title — line 2 (gold italic)", name: "hero_line2", widget: "string" }
+          - { label: "Big title — line 3", name: "hero_line3", widget: "string" }
+          - { label: "Intro sentence under title", name: "hero_desc", widget: "text" }
+          - { label: "Our Story — paragraph 1", name: "story_p1", widget: "text" }
+          - { label: "Our Story — paragraph 2", name: "story_p2", widget: "text" }
+          - { label: "Signature Cut — paragraph 1", name: "signature_p1", widget: "text" }
+          - { label: "Signature Cut — paragraph 2", name: "signature_p2", widget: "text" }
+          - { label: "Price (e.g. Rs. 100)", name: "price", widget: "string" }
+          - { label: "Review 1 — text", name: "testi1_text", widget: "text" }
+          - { label: "Review 1 — name", name: "testi1_author", widget: "string" }
+          - { label: "Review 2 — text", name: "testi2_text", widget: "text" }
+          - { label: "Review 2 — name", name: "testi2_author", widget: "string" }
+          - { label: "Phone number", name: "phone", widget: "string" }
+          - { label: "Instagram handle (e.g. @razanz_40)", name: "instagram_handle", widget: "string" }
