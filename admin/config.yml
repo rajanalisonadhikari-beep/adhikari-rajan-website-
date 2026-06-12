@@ -31,6 +31,7 @@ logo_url: https://decapbridge.com/decapcms-with-bridge.svg
 site_url: https://adhikari-rajan.com.np
 
 media_folder: "images/uploads"
+public_folder: "/images/uploads"
 
 collections:
   - name: "site"
@@ -56,3 +57,8 @@ collections:
           - { label: "Review 2 — name", name: "testi2_author", widget: "string" }
           - { label: "Phone number", name: "phone", widget: "string" }
           - { label: "Instagram handle (e.g. @razanz_40)", name: "instagram_handle", widget: "string" }
+          - { label: "Our Story — main photo", name: "img_story", widget: "image", required: false }
+          - { label: "Top floating photo 1", name: "img_float1", widget: "image", required: false }
+          - { label: "Top floating photo 2", name: "img_float2", widget: "image", required: false }
+          - { label: "Top floating photo 3", name: "img_float3", widget: "image", required: false }
+          - { label: "Top floating photo 4", name: "img_float4", widget: "image", required: false }
