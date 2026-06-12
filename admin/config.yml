@@ -1,7 +1,24 @@
+# Use DecapBridge classic auth (required)
 backend:
-  name: github
+  name: git-gateway
   repo: rajanalisonadhikari-beep/adhikari-rajan-website-
   branch: main
+  identity_url: https://auth.decapbridge.com/sites/c62714d3-6258-412b-8362-69e8c244f747
+  gateway_url: https://gateway.decapbridge.com
+
+  # See who did what (optional)
+  commit_messages:
+    create: Create {{collection}} "{{slug}}" - {{author-name}} <{{author-login}}> via DecapBridge
+    update: Update {{collection}} "{{slug}}" - {{author-name}} <{{author-login}}> via DecapBridge
+    delete: Delete {{collection}} "{{slug}}" - {{author-name}} <{{author-login}}> via DecapBridge
+    uploadMedia: Upload "{{path}}" - {{author-name}} <{{author-login}}> via DecapBridge
+    deleteMedia: Delete "{{path}}" - {{author-name}} <{{author-login}}> via DecapBridge
+
+# Better Decap + Bridge logo (optional)
+logo_url: https://decapbridge.com/decapcms-with-bridge.svg
+
+# Add site links in Decap CMS (optional)
+site_url: https://adhikari-rajan.com.np
 
 media_folder: "images/uploads"
 
