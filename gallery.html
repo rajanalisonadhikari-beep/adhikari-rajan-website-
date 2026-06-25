@@ -198,5 +198,45 @@
 })();
 </script>
 <script src="pages.js"></script>
+
+<!-- ===== LIVE GALLERY FROM BACKEND (added) ===== -->
+<script>
+(function(){
+  var API_URL = "https://adhikari-rajan-api.onrender.com"; // <-- set to YOUR Render URL (no trailing slash)
+  var grid = document.querySelector("#grid .gallery-grid") || document.querySelector(".gallery-grid");
+  if(!grid) return;
+  fetch(API_URL + "/api/gallery")
+    .then(function(r){ return r.json(); })
+    .then(function(list){
+      if(!list || !list.length) return; // empty/offline -> keep the static photos below
+      grid.innerHTML = list.map(function(p){
+        var cap = p.cap ? '<figcaption class="gallery-cap"><span class="gc-name">'+esc(p.cap)+'</span></figcaption>' : '';
+        return '<figure class="gallery-item">'
+          + '<img src="'+esc(p.url)+'" data-full="'+esc(p.url)+'" alt="'+esc(p.cap||"Barber work")+'" loading="lazy">'
+          + cap + '</figure>';
+      }).join("");
+      wireLightbox();
+    })
+    .catch(function(){ /* server asleep — static gallery stays */ });
+
+  function wireLightbox(){
+    var lb = document.getElementById("lightbox");
+    if(!lb) return;
+    var lbImg = lb.querySelector("img");
+    grid.addEventListener("click", function(e){
+      var img = e.target.closest ? e.target.closest("img") : null;
+      if(!img || !grid.contains(img)) return;
+      lbImg.src = img.getAttribute("data-full") || img.src;
+      lb.classList.add("open");
+      lb.style.display = "flex";
+    });
+    function close(){ lb.classList.remove("open"); lb.style.display = "none"; }
+    var btn = lb.querySelector(".lightbox-close");
+    if(btn) btn.addEventListener("click", close);
+    lb.addEventListener("click", function(e){ if(e.target === lb) close(); });
+  }
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+})();
+</script>
 </body>
 </html>

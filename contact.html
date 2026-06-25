@@ -316,5 +316,61 @@
 })();
 </script>
 <script src="pages.js"></script>
+
+<!-- ===== SEND BOOKING TO BACKEND (added) ===== -->
+<script>
+(function(){
+  var API_URL = "https://adhikari-rajan-api.onrender.com"; // <-- set to YOUR Render URL (no trailing slash)
+  var btn = document.getElementById("formSubmit");
+  if(!btn) return;
+  // replace the button to drop any existing click handler, then bind ours
+  var fresh = btn.cloneNode(true);
+  btn.parentNode.replaceChild(fresh, btn);
+
+  fresh.addEventListener("click", function(e){
+    e.preventDefault();
+    var name = val("cf-name"), phone = val("cf-phone"), email = val("cf-email"),
+        service = val("cf-service"), date = val("cf-date"), message = val("cf-message");
+
+    if(!name || !email || !message || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){
+      var old = fresh.textContent;
+      fresh.textContent = "Fill name, email & message";
+      setTimeout(function(){ fresh.textContent = old || "Send Request"; }, 2200);
+      return;
+    }
+
+    fresh.disabled = true; fresh.textContent = "Sending…";
+    var body = {
+      name: name, phone: phone, email: email,
+      message: "Service: " + (service || "—") + " · Preferred date: " + (date || "not specified") + "\n\n" + message
+    };
+    fetch(API_URL + "/api/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    })
+    .then(function(r){ if(!r.ok) throw new Error(); return r.json(); })
+    .then(function(){ showSuccess(true); })
+    .catch(function(){ showSuccess(false); })
+    .then(function(){ fresh.disabled = false; fresh.textContent = "Send Request"; });
+  });
+
+  function showSuccess(ok){
+    var form = document.getElementById("contactForm");
+    var box  = document.getElementById("formSuccess");
+    if(form) form.style.display = "none";
+    if(box){
+      if(!ok){
+        var p = box.querySelector("p");
+        if(p) p.textContent = "We couldn't reach the server just now — it may be waking up. Please call or DM on Instagram and we'll lock your slot right away.";
+      }
+      box.style.display = "block";
+      box.classList.add("show");
+      box.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  }
+  function val(id){ var el = document.getElementById(id); return el ? el.value.trim() : ""; }
+})();
+</script>
 </body>
 </html>

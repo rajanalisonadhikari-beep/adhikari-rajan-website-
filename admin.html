@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin — Adhikari Rajan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&family=Bebas+Neue&display=swap" rel="stylesheet">
+<style>
+  :root{--black:#080604;--panel:#100c08;--panel-2:#17120c;--line:#2a2118;--gold:#c9a14a;--gold-bright:#e8c878;--text:#efe9df;--muted:#9a8e7c;--danger:#c0552f}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--black);color:var(--text);font-family:'Inter',sans-serif;font-weight:300;min-height:100vh}
+  h1,h2,h3{font-family:'Playfair Display',serif;font-weight:600}
+  button{font-family:inherit;cursor:pointer}
+  input,textarea,select{font-family:inherit}
+  #login{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 50% 0%,#17120c 0%,var(--black) 60%)}
+  .login-card{width:100%;max-width:380px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:36px 30px;box-shadow:0 30px 60px rgba(0,0,0,.5)}
+  .brand{text-align:center;margin-bottom:26px}
+  .brand .mark{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;letter-spacing:3px;color:var(--gold-bright);line-height:1}
+  .brand small{display:block;color:var(--muted);letter-spacing:3px;font-size:.7rem;margin-top:6px;text-transform:uppercase}
+  .field{margin-bottom:16px}
+  .field label{display:block;font-size:.78rem;color:var(--muted);margin-bottom:7px}
+  .field input,.field textarea{width:100%;background:var(--black);border:1px solid var(--line);color:var(--text);border-radius:9px;padding:12px 14px;font-size:.95rem;outline:none;transition:border-color .2s}
+  .field input:focus,.field textarea:focus{border-color:var(--gold)}
+  .btn{width:100%;background:var(--gold);color:#1a1206;border:none;border-radius:9px;padding:13px;font-weight:600;font-size:.95rem;transition:filter .2s,transform .05s}
+  .btn:hover{filter:brightness(1.08)} .btn:active{transform:translateY(1px)}
+  .btn:disabled{opacity:.5;cursor:not-allowed}
+  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--text)}
+  .btn.ghost:hover{border-color:var(--gold);filter:none}
+  .btn.danger{background:transparent;border:1px solid var(--danger);color:#e08a6a}
+  .err{color:#e08a6a;font-size:.82rem;margin-top:10px;min-height:1em;text-align:center}
+  #app{display:none}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid var(--line);background:var(--panel);position:sticky;top:0;z-index:20}
+  .topbar .mark{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:2px;color:var(--gold-bright)}
+  .topbar .right{display:flex;gap:10px;align-items:center}
+  .topbar .right a{color:var(--muted);text-decoration:none;font-size:.85rem}
+  .topbar .right a:hover{color:var(--gold)}
+  .logout{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:8px 14px;font-size:.82rem}
+  .logout:hover{border-color:var(--danger);color:#e08a6a}
+  .wrap{max-width:1040px;margin:0 auto;padding:26px 20px 80px}
+  .banner{background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:12px 16px;font-size:.82rem;color:var(--muted);margin-bottom:20px;display:none}
+  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:26px}
+  .tab{background:var(--panel);border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:9px 18px;font-size:.85rem}
+  .tab.active{background:var(--gold);color:#1a1206;border-color:var(--gold);font-weight:600}
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:30px}
+  .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px}
+  .stat .n{font-family:'Bebas Neue',sans-serif;font-size:2.6rem;color:var(--gold-bright);line-height:1}
+  .stat .t{color:var(--muted);font-size:.78rem;letter-spacing:1px;text-transform:uppercase;margin-top:6px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:24px}
+  .panel h2{font-size:1.25rem;margin-bottom:4px}
+  .panel .sub{color:var(--muted);font-size:.85rem;margin-bottom:20px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .row-actions{display:flex;gap:10px;margin-top:6px}
+  .item{display:flex;align-items:flex-start;gap:14px;padding:16px;border:1px solid var(--line);border-radius:11px;margin-bottom:12px;background:var(--panel-2)}
+  .item .body{flex:1;min-width:0}
+  .item .name{font-family:'Playfair Display',serif;font-size:1.05rem}
+  .item .price{font-family:'Bebas Neue',sans-serif;color:var(--gold-bright);font-size:1.3rem;letter-spacing:1px}
+  .item .desc{color:var(--muted);font-size:.85rem;margin-top:5px}
+  .item .meta{color:var(--gold);font-size:.72rem;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px}
+  .item-actions{display:flex;flex-direction:column;gap:8px}
+  .mini{padding:7px 12px;font-size:.78rem;border-radius:7px;border:1px solid var(--line);background:transparent;color:var(--text)}
+  .mini:hover{border-color:var(--gold)} .mini.del{color:#e08a6a;border-color:var(--danger)}
+  .gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+  .gcard{position:relative;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel-2)}
+  .gcard img{width:100%;height:140px;object-fit:cover;display:block}
+  .gcard .cap{padding:8px 10px;font-size:.78rem;color:var(--muted)}
+  .gcard .x{position:absolute;top:6px;right:6px;background:rgba(8,6,4,.8);border:1px solid var(--danger);color:#e08a6a;border-radius:6px;width:28px;height:28px;font-size:1rem}
+  .uploader{border:1px dashed var(--line);border-radius:11px;padding:18px;text-align:center;margin-bottom:14px}
+  .uploader .prev{max-width:160px;border-radius:9px;margin:12px auto 0;display:none}
+  .status{font-size:.82rem;color:var(--muted);margin-top:10px;min-height:1em}
+  .status.ok{color:#8fc47d} .status.bad{color:#e08a6a}
+  input[type=file]{display:none}
+  .pickbtn{display:inline-block;background:transparent;border:1px solid var(--gold);color:var(--gold);padding:10px 20px;border-radius:8px;font-size:.85rem}
+  .pickbtn:hover{background:rgba(201,161,74,.1)}
+  .msg{border:1px solid var(--line);border-radius:11px;padding:16px;margin-bottom:12px;background:var(--panel-2);cursor:pointer}
+  .msg.unread{border-color:var(--gold)}
+  .msg .head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+  .msg .who{font-family:'Playfair Display',serif;font-size:1rem}
+  .msg .when{color:var(--muted);font-size:.75rem}
+  .msg .contact{color:var(--gold);font-size:.82rem;margin-bottom:8px}
+  .msg .text{color:var(--text);font-size:.9rem}
+  .empty{color:var(--muted);text-align:center;padding:30px;font-size:.9rem}
+  .hidden{display:none!important}
+  @media(max-width:720px){.stats{grid-template-columns:1fr}.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<section id="login">
+  <div class="login-card">
+    <div class="brand"><div class="mark">ADHIKARI&nbsp;RAJAN</div><small>Admin Panel</small></div>
+    <div class="field"><label>Username</label><input id="u" type="text" autocomplete="username" placeholder="admin"></div>
+    <div class="field"><label>Password</label><input id="p" type="password" autocomplete="current-password" placeholder="••••••••"></div>
+    <button class="btn" id="loginBtn">Sign in</button>
+    <div class="err" id="loginErr"></div>
+  </div>
+</section>
+
+<div id="app">
+  <div class="topbar">
+    <div class="mark">ADHIKARI&nbsp;RAJAN</div>
+    <div class="right">
+      <a href="index.html" target="_blank">View site ↗</a>
+      <button class="logout" id="logoutBtn">Log out</button>
+    </div>
+  </div>
+  <div class="wrap">
+    <div class="banner" id="banner"></div>
+    <div class="stats">
+      <div class="stat"><div class="n" id="statServices">–</div><div class="t">Services</div></div>
+      <div class="stat"><div class="n" id="statGallery">–</div><div class="t">Gallery Photos</div></div>
+      <div class="stat"><div class="n" id="statMsgs">–</div><div class="t">Unread Messages</div></div>
+    </div>
+    <div class="tabs">
+      <button class="tab active" data-tab="services">Services</button>
+      <button class="tab" data-tab="gallery">Gallery</button>
+      <button class="tab" data-tab="messages">Messages</button>
+    </div>
+
+    <div id="tab-services">
+      <div class="panel">
+        <h2 id="svcFormTitle">Add a service</h2>
+        <div class="sub">Cut name, price, and a short line. These appear on your live Services page.</div>
+        <div class="grid2">
+          <div class="field"><label>Service name</label><input id="svcName" placeholder="Skin Fade"></div>
+          <div class="field"><label>Price (Rs.)</label><input id="svcPrice" placeholder="400"></div>
+        </div>
+        <div class="grid2">
+          <div class="field"><label>Category</label><input id="svcCategory" list="catList" placeholder="The Cuts"><datalist id="catList"><option value="The Cuts"></option><option value="Signature"></option><option value="Beard & Shave"></option></datalist></div>
+          <div class="field"><label>Tag (optional)</label><input id="svcTag" placeholder="House"></div>
+        </div>
+        <div class="grid2">
+          <div class="field"><label>Duration (optional)</label><input id="svcDuration" placeholder="45 min"></div>
+          <div class="field"></div>
+        </div>
+        <div class="field"><label>Description</label><textarea id="svcDesc" rows="2" placeholder="Tight gradient fade with a hot-towel finish."></textarea></div>
+        <input type="hidden" id="svcEditId">
+        <div class="row-actions">
+          <button class="btn" id="svcSave" style="width:auto;padding:11px 24px">Save service</button>
+          <button class="btn ghost" id="svcCancel" style="width:auto;padding:11px 24px;display:none">Cancel edit</button>
+        </div>
+      </div>
+      <div id="svcList"></div>
+    </div>
+
+    <div id="tab-gallery" class="hidden">
+      <div class="panel">
+        <h2>Add a gallery photo</h2>
+        <div class="sub">Upload from your phone or computer — hosts on imgbb, link saved to your server.</div>
+        <div class="uploader">
+          <label class="pickbtn" for="galFile">Choose image</label>
+          <input type="file" id="galFile" accept="image/*">
+          <img class="prev" id="galPrev">
+          <div class="status" id="galStatus">No file chosen yet.</div>
+        </div>
+        <div class="field"><label>Caption (optional)</label><input id="galCap" placeholder="Classic side-part, scissor finish"></div>
+        <input type="hidden" id="galUrl">
+        <button class="btn" id="galSave" style="width:auto;padding:11px 24px" disabled>Add to gallery</button>
+      </div>
+      <div class="gal" id="galGrid"></div>
+    </div>
+
+    <div id="tab-messages" class="hidden">
+      <div class="panel">
+        <h2>Booking & contact messages</h2>
+        <div class="sub">Requests from your Contact page. Tap one to mark it read.</div>
+        <div style="display:flex;gap:10px;margin-top:4px">
+          <button class="btn danger" id="clearMsgs" style="width:auto;padding:9px 18px">Clear all</button>
+        </div>
+      </div>
+      <div id="msgList"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   CONFIG — set this to YOUR Render URL after deploying
+   (no trailing slash)
+   ============================================================ */
+const API = "https://adhikari-rajan-api.onrender.com";
+const IMGBB_KEY = "fb46f1930c5de23cfa83e7a6fa4f8a0b";
+
+const TOKEN_KEY = "ar_token";
+const getToken = () => localStorage.getItem(TOKEN_KEY);
+const setToken = t => localStorage.setItem(TOKEN_KEY, t);
+const clearToken = () => localStorage.removeItem(TOKEN_KEY);
+
+async function api(path, { method="GET", body, auth=false } = {}) {
+  const headers = { "Content-Type": "application/json" };
+  if (auth) headers.Authorization = "Bearer " + getToken();
+  const res = await fetch(API + path, { method, headers, body: body ? JSON.stringify(body) : undefined });
+  if (res.status === 401) { clearToken(); location.reload(); throw new Error("unauthorized"); }
+  if (!res.ok) { const e = await res.json().catch(()=>({})); throw new Error(e.error || "Request failed"); }
+  return res.status === 204 ? null : res.json();
+}
+
+const loginSec = document.getElementById("login");
+const appSec   = document.getElementById("app");
+const banner   = document.getElementById("banner");
+
+function showApp(){ loginSec.style.display="none"; appSec.style.display="block"; renderAll(); }
+if (getToken()) showApp();
+
+document.getElementById("loginBtn").onclick = async () => {
+  const username = document.getElementById("u").value.trim();
+  const password = document.getElementById("p").value;
+  const errEl = document.getElementById("loginErr");
+  errEl.textContent = "Signing in…";
+  try {
+    const { token } = await api("/api/login", { method:"POST", body:{ username, password } });
+    setToken(token); errEl.textContent=""; showApp();
+  } catch (e) {
+    errEl.textContent = e.message.includes("Failed to fetch")
+      ? "Can't reach the server. If it was idle, give it ~30–60s and try again."
+      : "Wrong username or password.";
+  }
+};
+document.getElementById("p").addEventListener("keydown", e => { if (e.key==="Enter") document.getElementById("loginBtn").click(); });
+document.getElementById("logoutBtn").onclick = () => { clearToken(); location.reload(); };
+
+document.querySelectorAll(".tab").forEach(t => t.onclick = () => {
+  document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
+  t.classList.add("active");
+  ["services","gallery","messages"].forEach(name =>
+    document.getElementById("tab-"+name).classList.toggle("hidden", name !== t.dataset.tab));
+});
+
+/* ---------- SERVICES ---------- */
+const svcName=document.getElementById("svcName"),svcPrice=document.getElementById("svcPrice"),
+      svcDuration=document.getElementById("svcDuration"),svcTag=document.getElementById("svcTag"),
+      svcCategory=document.getElementById("svcCategory"),
+      svcDesc=document.getElementById("svcDesc"),svcEditId=document.getElementById("svcEditId");
+let SERVICES=[];
+
+function resetSvcForm(){
+  svcName.value=svcPrice.value=svcDuration.value=svcTag.value=svcCategory.value=svcDesc.value=svcEditId.value="";
+  document.getElementById("svcFormTitle").textContent="Add a service";
+  document.getElementById("svcCancel").style.display="none";
+}
+document.getElementById("svcCancel").onclick=resetSvcForm;
+document.getElementById("svcSave").onclick=async()=>{
+  const name=svcName.value.trim(); if(!name){svcName.focus();return;}
+  const body={name,price:svcPrice.value.trim(),duration:svcDuration.value.trim(),tag:svcTag.value.trim(),category:svcCategory.value.trim(),desc:svcDesc.value.trim()};
+  try{
+    if(svcEditId.value) await api("/api/services/"+svcEditId.value,{method:"PUT",body,auth:true});
+    else await api("/api/services",{method:"POST",body,auth:true});
+    resetSvcForm(); await renderAll();
+  }catch(e){alert(e.message);}
+};
+function editSvc(id){
+  const s=SERVICES.find(x=>x._id===id); if(!s)return;
+  svcName.value=s.name; svcPrice.value=s.price||""; svcDuration.value=s.duration||"";
+  svcTag.value=s.tag||""; svcCategory.value=s.category||""; svcDesc.value=s.desc||""; svcEditId.value=s._id;
+  document.getElementById("svcFormTitle").textContent="Edit service";
+  document.getElementById("svcCancel").style.display="inline-block";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+async function delSvc(id){ if(!confirm("Delete this service?"))return; await api("/api/services/"+id,{method:"DELETE",auth:true}); renderAll(); }
+
+function renderServices(){
+  const wrap=document.getElementById("svcList");
+  if(!SERVICES.length){wrap.innerHTML='<div class="empty">No services yet. Add your first one above.</div>';return;}
+  wrap.innerHTML=SERVICES.map(s=>`
+    <div class="item"><div class="body">
+      ${s.category?`<div class="meta">${esc(s.category)}</div>`:``}
+      <div class="name">${esc(s.name)}${s.tag?` <span style="font-size:.65rem;color:var(--gold);border:1px solid var(--line);border-radius:5px;padding:2px 6px;letter-spacing:1px;text-transform:uppercase">${esc(s.tag)}</span>`:``}</div>
+      ${s.price?`<div class="price">Rs. ${esc(s.price)}${s.duration?` <span style="font-size:.7rem;color:var(--muted);letter-spacing:1px">/ ${esc(s.duration)}</span>`:``}</div>`:``}
+      ${s.desc?`<div class="desc">${esc(s.desc)}</div>`:``}
+    </div><div class="item-actions">
+      <button class="mini" onclick="editSvc('${s._id}')">Edit</button>
+      <button class="mini del" onclick="delSvc('${s._id}')">Delete</button>
+    </div></div>`).join("");
+}
+
+/* ---------- GALLERY ---------- */
+const galFile=document.getElementById("galFile"),galPrev=document.getElementById("galPrev"),
+      galStatus=document.getElementById("galStatus"),galUrl=document.getElementById("galUrl"),
+      galSave=document.getElementById("galSave"),galCap=document.getElementById("galCap");
+let GALLERY=[];
+
+galFile.onchange=async()=>{
+  const file=galFile.files[0]; if(!file)return;
+  galPrev.src=URL.createObjectURL(file); galPrev.style.display="block";
+  galStatus.className="status"; galStatus.textContent="Uploading…"; galSave.disabled=true;
+  try{
+    const fd=new FormData(); fd.append("image",file);
+    const res=await fetch("https://api.imgbb.com/1/upload?key="+IMGBB_KEY,{method:"POST",body:fd});
+    const data=await res.json();
+    if(data&&data.success){ galUrl.value=data.data.url; galStatus.className="status ok"; galStatus.textContent="Uploaded. Click “Add to gallery”."; galSave.disabled=false; }
+    else throw new Error("upload failed");
+  }catch{ galStatus.className="status bad"; galStatus.textContent="Upload failed. Check connection and retry."; galSave.disabled=true; }
+};
+galSave.onclick=async()=>{
+  if(!galUrl.value)return;
+  try{
+    await api("/api/gallery",{method:"POST",body:{url:galUrl.value,cap:galCap.value.trim()},auth:true});
+    galFile.value=""; galPrev.style.display="none"; galUrl.value=""; galCap.value="";
+    galStatus.className="status"; galStatus.textContent="No file chosen yet."; galSave.disabled=true;
+    renderAll();
+  }catch(e){alert(e.message);}
+};
+async function delGal(id){ if(!confirm("Remove this photo?"))return; await api("/api/gallery/"+id,{method:"DELETE",auth:true}); renderAll(); }
+
+function renderGallery(){
+  const grid=document.getElementById("galGrid");
+  if(!GALLERY.length){grid.innerHTML='<div class="empty">No photos yet. Upload your first cut above.</div>';return;}
+  grid.innerHTML=GALLERY.map(g=>`
+    <div class="gcard"><button class="x" onclick="delGal('${g._id}')" title="Remove">×</button>
+      <img src="${esc(g.url)}" alt="${esc(g.cap||'Gallery photo')}">
+      ${g.cap?`<div class="cap">${esc(g.cap)}</div>`:``}
+    </div>`).join("");
+}
+
+/* ---------- MESSAGES ---------- */
+let MESSAGES=[];
+function renderMessages(){
+  const wrap=document.getElementById("msgList");
+  if(!MESSAGES.length){wrap.innerHTML='<div class="empty">No messages yet. Requests from your Contact page appear here.</div>';return;}
+  wrap.innerHTML=MESSAGES.map(m=>`
+    <div class="msg ${m.read?"":"unread"}" onclick="markRead('${m._id}')">
+      <div class="head"><span class="who">${esc(m.name||"Someone")}</span><span class="when">${m.createdAt?new Date(m.createdAt).toLocaleString():""}</span></div>
+      <div class="contact">${esc(m.phone||"")}${m.phone&&m.email?" · ":""}${esc(m.email||"")}</div>
+      <div class="text">${esc(m.message||"")}</div>
+    </div>`).join("");
+}
+async function markRead(id){ const m=MESSAGES.find(x=>x._id===id); if(!m||m.read)return; await api("/api/messages/"+id+"/read",{method:"PUT",auth:true}); renderAll(); }
+document.getElementById("clearMsgs").onclick=async()=>{ if(!confirm("Delete ALL messages? Can't be undone."))return; await api("/api/messages",{method:"DELETE",auth:true}); renderAll(); };
+
+/* ---------- helpers + render ---------- */
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+async function renderAll(){
+  banner.style.display="none";
+  try{
+    [SERVICES,GALLERY,MESSAGES]=await Promise.all([
+      api("/api/services"), api("/api/gallery"), api("/api/messages",{auth:true})
+    ]);
+    renderServices(); renderGallery(); renderMessages();
+    document.getElementById("statServices").textContent=SERVICES.length;
+    document.getElementById("statGallery").textContent=GALLERY.length;
+    document.getElementById("statMsgs").textContent=MESSAGES.filter(m=>!m.read).length;
+  }catch(e){
+    banner.style.display="block";
+    banner.textContent = e.message.includes("Failed to fetch")
+      ? "Can't reach the server. Free Render servers sleep after 15 min idle — wait ~30–60s and refresh."
+      : "Error: "+e.message;
+  }
+}
+window.editSvc=editSvc;window.delSvc=delSvc;window.delGal=delGal;window.markRead=markRead;
+</script>
+</body>
+</html>

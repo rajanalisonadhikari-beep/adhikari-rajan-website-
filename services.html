@@ -234,5 +234,42 @@
 })();
 </script>
 <script src="pages.js"></script>
+
+<!-- ===== LIVE SERVICES FROM BACKEND (added) ===== -->
+<script>
+(function(){
+  var API_URL = "https://adhikari-rajan-api.onrender.com"; // <-- set to YOUR Render URL (no trailing slash)
+  var box = document.getElementById("menu");
+  if(!box) return;
+  fetch(API_URL + "/api/services")
+    .then(function(r){ return r.json(); })
+    .then(function(list){
+      if(!list || !list.length) return; // empty/offline -> keep the static menu below
+      var order = [], groups = {};
+      list.forEach(function(s){
+        var cat = s.category || "Services";
+        if(!groups[cat]){ groups[cat] = []; order.push(cat); }
+        groups[cat].push(s);
+      });
+      box.innerHTML = order.map(function(cat){
+        var items = groups[cat].map(function(s){
+          var tag   = s.tag ? ' <span class="svc-tag">'+esc(s.tag)+'</span>' : '';
+          var price = s.price ? 'Rs. '+esc(s.price) : '';
+          var dur   = s.duration ? ' · '+esc(s.duration) : '';
+          return '<div class="svc-item">'
+            + '<span class="svc-item-name">'+esc(s.name)+tag+'</span>'
+            + '<span class="svc-item-price">'+price+dur+'</span>'
+            + (s.desc ? '<span class="svc-item-desc">'+esc(s.desc)+'</span>' : '')
+            + '</div>';
+        }).join("");
+        return '<div class="svc-cat">'
+          + '<div class="svc-cat-head"><h3>'+esc(cat)+'</h3><span class="rule"></span></div>'
+          + items + '</div>';
+      }).join("");
+    })
+    .catch(function(){ /* server asleep — static menu stays */ });
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+})();
+</script>
 </body>
 </html>
