@@ -195,9 +195,45 @@ async function buildSignature(){
   }
 }
 
+
+
+// ─── LOAD CUTS FROM ADMIN (products.json) ─────────────────
+async function loadAdminCuts() {
+  try {
+    const res = await fetch('products.json?v=' + Date.now());
+    if (!res.ok) return null;
+    const data = await res.json();
+    if (!Array.isArray(data) || data.length === 0) return null;
+    return data;
+  } catch(e) { return null; }
+}
+
+async function buildCutsGridFromAdmin(cuts) {
+  const grid = document.getElementById('cuts-grid');
+  grid.innerHTML = '';
+  cuts.forEach((cut, i) => {
+    const card = document.createElement('div');
+    card.className = 'cut-card reveal';
+    card.innerHTML = `
+      <img class="cut-img" src="${cut.image || ''}" alt="${cut.name}" style="${cut.image ? '' : 'display:none;'}" />
+      ${!cut.image ? `<div class="cut-loading" style="display:flex;align-items:center;justify-content:center;height:100%;"><span style="font-size:48px;">✂</span></div>` : ''}
+      <div class="cut-overlay">
+        <div class="cut-number">0${i+1}</div>
+        <div class="cut-tag">${cut.category || 'Cut'}</div>
+        <div class="cut-name">${cut.name}</div>
+        <div class="cut-divider"></div>
+        <div class="cut-desc">${cut.description || ''}</div>
+        <div class="cut-desc" style="margin-top:8px;font-weight:700;color:#c9a84c;">Rs. ${cut.price || ''}</div>
+      </div>`;
+    grid.appendChild(card);
+    ro.observe(card);
+  });
+}
+
 // Init all
-window.addEventListener('load',()=>{
-  buildCutsGrid();
+window.addEventListener('load',async ()=>{
+  const adminCuts = await loadAdminCuts();
+  if (adminCuts && adminCuts.length > 0) { buildCutsGridFromAdmin(adminCuts); } else { buildCutsGrid(); }
   buildCircular();
   buildSignature();
 });
