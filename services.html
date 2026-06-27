@@ -234,17 +234,17 @@
 })();
 </script>
 <script src="pages.js"></script>
-
-<!-- ===== LIVE SERVICES FROM BACKEND (added) ===== -->
+  
+<!-- ===== LIVE SERVICES FROM GITHUB DATA ===== -->
 <script>
 (function(){
-  var API_URL = "https://adhikari-rajan-api.onrender.com"; // <-- set to YOUR Render URL (no trailing slash)
+  var DATA_URL = "https://raw.githubusercontent.com/rajanalisonadhikari-beep/adhikari-rajan-website-/main/data/services.json";
   var box = document.getElementById("menu");
   if(!box) return;
-  fetch(API_URL + "/api/services")
+  fetch(DATA_URL + "?t=" + Date.now()) // cache-bust
     .then(function(r){ return r.json(); })
     .then(function(list){
-      if(!list || !list.length) return; // empty/offline -> keep the static menu below
+      if(!list || !list.length) return; // empty -> keep the static menu
       var order = [], groups = {};
       list.forEach(function(s){
         var cat = s.category || "Services";
@@ -262,12 +262,12 @@
             + (s.desc ? '<span class="svc-item-desc">'+esc(s.desc)+'</span>' : '')
             + '</div>';
         }).join("");
-        return '<div class="svc-cat">'
+        return '<div class="svc-cat reveal">'
           + '<div class="svc-cat-head"><h3>'+esc(cat)+'</h3><span class="rule"></span></div>'
           + items + '</div>';
       }).join("");
     })
-    .catch(function(){ /* server asleep — static menu stays */ });
+    .catch(function(){ /* fetch failed — static menu stays */ });
   function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
 })();
 </script>
