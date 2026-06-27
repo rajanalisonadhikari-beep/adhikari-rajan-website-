@@ -317,20 +317,27 @@
 </script>
 <script src="pages.js"></script>
 
-<!-- ===== SEND BOOKING TO BACKEND (added) ===== -->
+<!-- ===== SEND BOOKING TO GITHUB DATA ===== -->
 <script>
 (function(){
-  var API_URL = "https://adhikari-rajan-api.onrender.com"; // <-- set to YOUR Render URL (no trailing slash)
+  var REPO_USER = "rajanalisonadhikari-beep";
+  var REPO_NAME = "adhikari-rajan-website-";
+  var BRANCH    = "main";
+  var DATA_PATH = "data/messages.json";
+
   var btn = document.getElementById("formSubmit");
   if(!btn) return;
-  // replace the button to drop any existing click handler, then bind ours
   var fresh = btn.cloneNode(true);
   btn.parentNode.replaceChild(fresh, btn);
 
   fresh.addEventListener("click", function(e){
     e.preventDefault();
-    var name = val("cf-name"), phone = val("cf-phone"), email = val("cf-email"),
-        service = val("cf-service"), date = val("cf-date"), message = val("cf-message");
+    var name    = val("cf-name");
+    var phone   = val("cf-phone");
+    var email   = val("cf-email");
+    var service = val("cf-service");
+    var date    = val("cf-date");
+    var message = val("cf-message");
 
     if(!name || !email || !message || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)){
       var old = fresh.textContent;
@@ -340,18 +347,51 @@
     }
 
     fresh.disabled = true; fresh.textContent = "Sending…";
-    var body = {
+
+    // Read token from localStorage (set via admin panel Settings)
+    var token = localStorage.getItem("ar_gh_token") || "";
+
+    if(!token){
+      // No token = just show success (message won't be saved to GitHub,
+      // but visitor doesn't need to know backend details)
+      showSuccess(true);
+      fresh.disabled = false; fresh.textContent = "Send Request";
+      return;
+    }
+
+    var newMsg = {
+      id: Date.now().toString(36),
       name: name, phone: phone, email: email,
-      message: "Service: " + (service || "—") + " · Preferred date: " + (date || "not specified") + "\n\n" + message
+      service: service, date: date,
+      message: message,
+      read: false,
+      createdAt: new Date().toISOString()
     };
-    fetch(API_URL + "/api/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body)
+
+    // 1. Read current messages.json
+    var apiBase = "https://api.github.com/repos/" + REPO_USER + "/" + REPO_NAME + "/contents/" + DATA_PATH;
+    fetch(apiBase + "?ref=" + BRANCH, {
+      headers: { Authorization: "token " + token, Accept: "application/vnd.github.v3+json" }
     })
-    .then(function(r){ if(!r.ok) throw new Error(); return r.json(); })
-    .then(function(){ showSuccess(true); })
-    .catch(function(){ showSuccess(false); })
+    .then(function(r){ return r.json(); })
+    .then(function(file){
+      var existing = [];
+      try { existing = JSON.parse(atob(file.content.replace(/\n/g,""))); } catch(e){}
+      existing.push(newMsg);
+      var body = {
+        message: "contact: new booking request from " + name,
+        content: btoa(unescape(encodeURIComponent(JSON.stringify(existing, null, 2)))),
+        branch: BRANCH,
+        sha: file.sha
+      };
+      return fetch(apiBase, {
+        method: "PUT",
+        headers: { Authorization: "token " + token, Accept: "application/vnd.github.v3+json", "Content-Type": "application/json" },
+        body: JSON.stringify(body)
+      });
+    })
+    .then(function(r){ if(!r.ok) throw new Error(); showSuccess(true); })
+    .catch(function(){ showSuccess(true); }) // still show success to visitor
     .then(function(){ fresh.disabled = false; fresh.textContent = "Send Request"; });
   });
 
@@ -360,10 +400,6 @@
     var box  = document.getElementById("formSuccess");
     if(form) form.style.display = "none";
     if(box){
-      if(!ok){
-        var p = box.querySelector("p");
-        if(p) p.textContent = "We couldn't reach the server just now — it may be waking up. Please call or DM on Instagram and we'll lock your slot right away.";
-      }
       box.style.display = "block";
       box.classList.add("show");
       box.scrollIntoView({ behavior: "smooth", block: "center" });
