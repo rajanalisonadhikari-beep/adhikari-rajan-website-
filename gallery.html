@@ -166,39 +166,20 @@
 <script>
 (function(){
   var DATA_URL = "https://raw.githubusercontent.com/rajanalisonadhikari-beep/adhikari-rajan-website-/main/data/gallery.json";
-  var grid = document.querySelector("#grid .gallery-grid") || document.querySelector(".gallery-grid");
+  var grid = document.getElementById("gallery-grid");
   if(!grid) return;
   fetch(DATA_URL + "?t=" + Date.now())
     .then(function(r){ return r.json(); })
     .then(function(list){
-      if(!list || !list.length) return; // empty -> keep static photos
+      if(!list || !list.length){ grid.innerHTML='<p style="color:#888;text-align:center;padding:40px">No photos yet.</p>'; return; }
       grid.innerHTML = list.map(function(p){
-        var cap = p.cap ? '<figcaption class="gallery-cap"><span class="gc-name">'+esc(p.cap)+'</span></figcaption>' : '';
         return '<figure class="gallery-item reveal">'
-          + '<img src="'+esc(p.url)+'" data-full="'+esc(p.url)+'" alt="'+esc(p.cap||"Barber work")+'" loading="lazy">'
-          + cap + '</figure>';
+          + '<img src="'+p.url+'" data-full="'+p.url+'" alt="'+(p.cap||'Barber work')+'" loading="lazy">'
+          + (p.cap ? '<figcaption class="gallery-cap"><span class="gc-name">'+p.cap+'</span></figcaption>' : '')
+          + '</figure>';
       }).join("");
-      wireLightbox();
     })
-    .catch(function(){ /* fetch failed — static gallery stays */ });
-
-  function wireLightbox(){
-    var lb = document.getElementById("lightbox");
-    if(!lb) return;
-    var lbImg = lb.querySelector("img");
-    grid.addEventListener("click", function(e){
-      var img = e.target.closest ? e.target.closest("img") : null;
-      if(!img || !grid.contains(img)) return;
-      lbImg.src = img.getAttribute("data-full") || img.src;
-      lb.classList.add("open");
-      lb.style.display = "flex";
-    });
-    function close(){ lb.classList.remove("open"); lb.style.display = "none"; }
-    var btn = lb.querySelector(".lightbox-close");
-    if(btn) btn.addEventListener("click", close);
-    lb.addEventListener("click", function(e){ if(e.target === lb) close(); });
-  }
-  function esc(s){ return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+    .catch(function(e){ console.log(e); });
 })();
 </script>
 </body>
