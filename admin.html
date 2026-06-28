@@ -9,183 +9,99 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&family=Bebas+Neue&display=swap" rel="stylesheet">
 <style>
-  :root{
-    --black:#080604;--panel:#100c08;--panel-2:#17120c;--line:#2a2118;
-    --gold:#c9a14a;--gold-bright:#e8c878;--text:#efe9df;--muted:#9a8e7c;
-    --danger:#c0552f;--ok:#5a9e6f;
-  }
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{background:var(--black);color:var(--text);font-family:'Inter',sans-serif;font-weight:300;min-height:100vh}
-  h1,h2,h3{font-family:'Playfair Display',serif;font-weight:600}
-  button{font-family:inherit;cursor:pointer}
-  input,textarea,select{font-family:inherit}
-
-  /* ── LOGIN ── */
-  #login{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 50% 0%,#17120c 0%,var(--black) 60%)}
-  .login-card{width:100%;max-width:380px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:36px 30px;box-shadow:0 30px 60px rgba(0,0,0,.5)}
-  .brand{text-align:center;margin-bottom:26px}
-  .brand .mark{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;letter-spacing:3px;color:var(--gold-bright);line-height:1}
-  .brand small{display:block;color:var(--muted);letter-spacing:3px;font-size:.7rem;margin-top:6px;text-transform:uppercase}
-
-  /* ── FIELDS ── */
-  .field{margin-bottom:16px}
-  .field label{display:block;font-size:.78rem;color:var(--muted);margin-bottom:7px;letter-spacing:.5px}
-  .field input,.field textarea,.field select{
-    width:100%;background:var(--black);border:1px solid var(--line);
-    color:var(--text);border-radius:9px;padding:12px 14px;font-size:.95rem;
-    outline:none;transition:border-color .2s;resize:vertical;
-  }
-  .field input:focus,.field textarea:focus,.field select:focus{border-color:var(--gold)}
-  .field textarea{min-height:90px}
-
-  /* ── BUTTONS ── */
-  .btn{background:var(--gold);color:#1a1206;border:none;border-radius:9px;padding:13px 22px;font-weight:600;font-size:.9rem;transition:filter .2s,transform .05s}
-  .btn:hover{filter:brightness(1.08)} .btn:active{transform:translateY(1px)}
-  .btn:disabled{opacity:.45;cursor:not-allowed;filter:none}
-  .btn.ghost{background:transparent;border:1px solid var(--line);color:var(--text)}
-  .btn.ghost:hover{border-color:var(--gold);filter:none}
-  .btn.danger{background:transparent;border:1px solid var(--danger);color:#e08a6a}
-  .btn.danger:hover{background:rgba(192,85,47,.12);filter:none}
-  .btn.full{width:100%}
-  .mini{padding:7px 12px;font-size:.78rem;border-radius:7px;border:1px solid var(--line);background:transparent;color:var(--text)}
-  .mini:hover{border-color:var(--gold)}
-  .mini.del{color:#e08a6a;border-color:var(--danger)}
-  .mini.del:hover{background:rgba(192,85,47,.12)}
-  .pickbtn{display:inline-block;background:transparent;border:1px solid var(--gold);color:var(--gold);padding:10px 20px;border-radius:8px;font-size:.85rem;cursor:pointer}
-  .pickbtn:hover{background:rgba(201,161,74,.1)}
-
-  /* ── MESSAGES ── */
-  .err{color:#e08a6a;font-size:.82rem;margin-top:10px;min-height:1em;text-align:center}
-  .status{font-size:.82rem;color:var(--muted);margin-top:8px;min-height:1em;padding:6px 0}
-  .status.ok{color:#8fc47d} .status.bad{color:#e08a6a} .status.info{color:var(--gold)}
-
-  /* ── TOASTS ── */
-  #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--panel-2);border:1px solid var(--line);color:var(--text);padding:12px 22px;border-radius:10px;font-size:.88rem;z-index:999;opacity:0;transition:opacity .3s;pointer-events:none;max-width:340px;text-align:center}
-  #toast.show{opacity:1}
-  #toast.ok{border-color:var(--ok);color:#8fc47d}
-  #toast.bad{border-color:var(--danger);color:#e08a6a}
-
-  /* ── APP SHELL ── */
-  #app{display:none}
-  .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 22px;border-bottom:1px solid var(--line);background:var(--panel);position:sticky;top:0;z-index:20}
-  .topbar .mark{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:2px;color:var(--gold-bright)}
-  .topbar .right{display:flex;gap:10px;align-items:center}
-  .topbar .right a{color:var(--muted);text-decoration:none;font-size:.85rem}
-  .topbar .right a:hover{color:var(--gold)}
-  .logout{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:8px 14px;font-size:.82rem}
-  .logout:hover{border-color:var(--danger);color:#e08a6a}
-
-  .wrap{max-width:1060px;margin:0 auto;padding:26px 20px 100px}
-
-  /* ── STATS ── */
-  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:28px}
-  .stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
-  .stat .n{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;color:var(--gold-bright);line-height:1}
-  .stat .t{color:var(--muted);font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;margin-top:5px}
-
-  /* ── TABS ── */
-  .tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:26px}
-  .tab{background:var(--panel);border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:9px 20px;font-size:.85rem;transition:all .2s}
-  .tab.active{background:var(--gold);color:#1a1206;border-color:var(--gold);font-weight:600}
-  .tab:hover:not(.active){border-color:var(--gold);color:var(--text)}
-
-  /* ── PANELS ── */
-  .panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:22px}
-  .panel h2{font-size:1.2rem;margin-bottom:4px}
-  .panel .sub{color:var(--muted);font-size:.83rem;margin-bottom:18px;line-height:1.5}
-  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-  .grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
-  .row-actions{display:flex;gap:10px;margin-top:4px;flex-wrap:wrap;align-items:center}
-
-  /* ── SERVICE ITEMS ── */
-  .item{display:flex;align-items:flex-start;gap:14px;padding:16px;border:1px solid var(--line);border-radius:11px;margin-bottom:10px;background:var(--panel-2);transition:border-color .2s}
-  .item:hover{border-color:#3a3020}
-  .item .body{flex:1;min-width:0}
-  .item .name{font-family:'Playfair Display',serif;font-size:1.05rem}
-  .item .price{font-family:'Bebas Neue',sans-serif;color:var(--gold-bright);font-size:1.3rem;letter-spacing:1px}
-  .item .desc{color:var(--muted);font-size:.83rem;margin-top:4px;line-height:1.5}
-  .item .meta{color:var(--gold);font-size:.7rem;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px}
-  .item-tag{font-size:.65rem;color:var(--gold);border:1px solid var(--line);border-radius:5px;padding:2px 7px;letter-spacing:1px;text-transform:uppercase;vertical-align:middle;margin-left:6px}
-  .item-actions{display:flex;flex-direction:column;gap:8px;flex-shrink:0}
-
-  /* ── GALLERY GRID ── */
-  .gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;margin-top:4px}
-  .gcard{position:relative;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel-2)}
-  .gcard img{width:100%;height:150px;object-fit:cover;display:block}
-  .gcard .cap{padding:8px 10px;font-size:.76rem;color:var(--muted)}
-  .gcard .x{position:absolute;top:6px;right:6px;background:rgba(8,6,4,.85);border:1px solid var(--danger);color:#e08a6a;border-radius:6px;width:28px;height:28px;font-size:1.1rem;line-height:1;display:flex;align-items:center;justify-content:center}
-  .gcard .x:hover{background:rgba(192,85,47,.3)}
-
-  /* ── BLOG LIST ── */
-  .post{padding:16px;border:1px solid var(--line);border-radius:11px;margin-bottom:10px;background:var(--panel-2);transition:border-color .2s}
-  .post:hover{border-color:#3a3020}
-  .post .post-top{display:flex;align-items:flex-start;gap:14px}
-  .post .post-img{width:80px;height:64px;object-fit:cover;border-radius:8px;flex-shrink:0;border:1px solid var(--line)}
-  .post .post-img.none{background:var(--black);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:.7rem}
-  .post .post-body{flex:1;min-width:0}
-  .post .post-title{font-family:'Playfair Display',serif;font-size:1.05rem;margin-bottom:4px}
-  .post .post-meta{color:var(--muted);font-size:.75rem;margin-bottom:5px}
-  .post .post-excerpt{color:var(--muted);font-size:.83rem;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-  .post .post-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
-
-  /* ── MESSAGES ── */
-  .msg{border:1px solid var(--line);border-radius:11px;padding:16px;margin-bottom:10px;background:var(--panel-2);cursor:pointer;transition:border-color .2s}
-  .msg.unread{border-color:var(--gold)}
-  .msg:hover{border-color:#3a3020}
-  .msg .head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:5px}
-  .msg .who{font-family:'Playfair Display',serif;font-size:1rem}
-  .msg .when{color:var(--muted);font-size:.75rem}
-  .msg .contact{color:var(--gold);font-size:.8rem;margin-bottom:7px}
-  .msg .text{color:var(--text);font-size:.88rem;line-height:1.5}
-  .unread-dot{display:inline-block;width:7px;height:7px;background:var(--gold-bright);border-radius:50%;margin-left:6px;vertical-align:middle}
-
-  /* ── UPLOADER ── */
-  .uploader{border:1px dashed var(--line);border-radius:11px;padding:20px;text-align:center;margin-bottom:14px;transition:border-color .2s}
-  .uploader:hover{border-color:var(--gold)}
-  .prev{max-width:180px;border-radius:9px;margin:12px auto 0;display:none;border:1px solid var(--line)}
-  input[type=file]{display:none}
-
-  /* ── MISC ── */
-  .empty{color:var(--muted);text-align:center;padding:36px;font-size:.88rem;border:1px dashed var(--line);border-radius:11px;background:var(--panel-2)}
-  .hidden{display:none!important}
-  .spinner{display:inline-block;width:14px;height:14px;border:2px solid rgba(201,161,74,.3);border-top-color:var(--gold);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle;margin-right:6px}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  .badge{display:inline-block;background:var(--gold);color:#1a1206;border-radius:999px;font-size:.65rem;font-weight:700;padding:2px 7px;letter-spacing:.5px;margin-left:6px;vertical-align:middle}
-
-  /* ── SETUP NOTICE ── */
-  .setup-box{background:var(--panel-2);border:1px solid var(--gold);border-radius:12px;padding:18px 20px;margin-bottom:22px;font-size:.85rem;line-height:1.7}
-  .setup-box b{color:var(--gold-bright)}
-  .setup-box code{background:rgba(0,0,0,.4);padding:2px 7px;border-radius:5px;font-size:.82rem;color:var(--text)}
-
-  @media(max-width:720px){
-    .stats{grid-template-columns:1fr 1fr}
-    .grid2,.grid3{grid-template-columns:1fr}
-    .topbar .right a{display:none}
-  }
-  @media(max-width:420px){.stats{grid-template-columns:1fr}}
+:root{--black:#080604;--panel:#100c08;--panel-2:#17120c;--line:#2a2118;--gold:#c9a14a;--gold-bright:#e8c878;--text:#efe9df;--muted:#9a8e7c;--danger:#c0552f;--ok:#5a8a4a}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--black);color:var(--text);font-family:'Inter',sans-serif;font-weight:300;min-height:100vh}
+h2,h3{font-family:'Playfair Display',serif;font-weight:600}
+button{font-family:inherit;cursor:pointer}
+input,textarea,select{font-family:inherit}
+#login{min-height:100vh;display:grid;place-items:center;padding:24px;background:radial-gradient(circle at 50% 0%,#17120c 0%,var(--black) 60%)}
+.login-card{width:100%;max-width:380px;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:36px 30px;box-shadow:0 30px 60px rgba(0,0,0,.5)}
+.brand{text-align:center;margin-bottom:26px}
+.brand .mark{font-family:'Bebas Neue',sans-serif;font-size:2.4rem;letter-spacing:3px;color:var(--gold-bright);line-height:1}
+.brand small{display:block;color:var(--muted);letter-spacing:3px;font-size:.7rem;margin-top:6px;text-transform:uppercase}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:.78rem;color:var(--muted);margin-bottom:7px}
+.field input,.field textarea{width:100%;background:var(--black);border:1px solid var(--line);color:var(--text);border-radius:9px;padding:12px 14px;font-size:.95rem;outline:none;transition:border-color .2s}
+.field input:focus,.field textarea:focus{border-color:var(--gold)}
+.btn{width:100%;background:var(--gold);color:#1a1206;border:none;border-radius:9px;padding:13px;font-weight:600;font-size:.95rem;transition:filter .2s}
+.btn:hover{filter:brightness(1.08)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.ghost{background:transparent;border:1px solid var(--line);color:var(--text)}
+.btn.ghost:hover{border-color:var(--gold)}
+.btn.danger{background:transparent;border:1px solid var(--danger);color:#e08a6a}
+.err{color:#e08a6a;font-size:.82rem;margin-top:10px;min-height:1em;text-align:center}
+#app{display:none}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid var(--line);background:var(--panel);position:sticky;top:0;z-index:20}
+.topbar .mark{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:2px;color:var(--gold-bright)}
+.topbar .right{display:flex;gap:10px;align-items:center}
+.topbar .right a{color:var(--muted);text-decoration:none;font-size:.85rem}
+.topbar .right a:hover{color:var(--gold)}
+.logout{background:transparent;border:1px solid var(--line);color:var(--muted);border-radius:8px;padding:8px 14px;font-size:.82rem}
+.logout:hover{border-color:var(--danger);color:#e08a6a}
+.wrap{max-width:1040px;margin:0 auto;padding:26px 20px 80px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:30px}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px}
+.stat .n{font-family:'Bebas Neue',sans-serif;font-size:2.6rem;color:var(--gold-bright);line-height:1}
+.stat .t{color:var(--muted);font-size:.78rem;letter-spacing:1px;text-transform:uppercase;margin-top:6px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:26px}
+.tab{background:var(--panel);border:1px solid var(--line);color:var(--muted);border-radius:999px;padding:9px 18px;font-size:.85rem}
+.tab.active{background:var(--gold);color:#1a1206;border-color:var(--gold);font-weight:600}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:24px;margin-bottom:24px}
+.panel h2{font-size:1.25rem;margin-bottom:4px}
+.panel .sub{color:var(--muted);font-size:.85rem;margin-bottom:20px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.row-actions{display:flex;gap:10px;margin-top:6px}
+.item{display:flex;align-items:flex-start;gap:14px;padding:16px;border:1px solid var(--line);border-radius:11px;margin-bottom:12px;background:var(--panel-2)}
+.item .body{flex:1;min-width:0}
+.item .name{font-family:'Playfair Display',serif;font-size:1.05rem}
+.item .price{font-family:'Bebas Neue',sans-serif;color:var(--gold-bright);font-size:1.3rem;letter-spacing:1px}
+.item .desc{color:var(--muted);font-size:.85rem;margin-top:5px}
+.item .meta{color:var(--gold);font-size:.72rem;letter-spacing:1px;text-transform:uppercase;margin-bottom:3px}
+.item-actions{display:flex;flex-direction:column;gap:8px}
+.mini{padding:7px 12px;font-size:.78rem;border-radius:7px;border:1px solid var(--line);background:transparent;color:var(--text)}
+.mini:hover{border-color:var(--gold)}
+.mini.del{color:#e08a6a;border-color:var(--danger)}
+.gal{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+.gcard{position:relative;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel-2)}
+.gcard img{width:100%;height:140px;object-fit:cover;display:block}
+.gcard .cap{padding:8px 10px;font-size:.78rem;color:var(--muted)}
+.gcard .x{position:absolute;top:6px;right:6px;background:rgba(8,6,4,.8);border:1px solid var(--danger);color:#e08a6a;border-radius:6px;width:28px;height:28px;font-size:1rem;cursor:pointer}
+.uploader{border:1px dashed var(--line);border-radius:11px;padding:18px;text-align:center;margin-bottom:14px}
+.uploader .prev{max-width:160px;border-radius:9px;margin:12px auto 0;display:none}
+.status{font-size:.82rem;color:var(--muted);margin-top:10px;min-height:1em}
+.status.ok{color:#8fc47d}
+.status.bad{color:#e08a6a}
+input[type=file]{display:none}
+.pickbtn{display:inline-block;background:transparent;border:1px solid var(--gold);color:var(--gold);padding:10px 20px;border-radius:8px;font-size:.85rem;cursor:pointer}
+.pickbtn:hover{background:rgba(201,161,74,.1)}
+.msg{border:1px solid var(--line);border-radius:11px;padding:16px;margin-bottom:12px;background:var(--panel-2);cursor:pointer}
+.msg.unread{border-color:var(--gold)}
+.msg .head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.msg .who{font-family:'Playfair Display',serif;font-size:1rem}
+.msg .when{color:var(--muted);font-size:.75rem}
+.msg .contact{color:var(--gold);font-size:.82rem;margin-bottom:8px}
+.msg .text{color:var(--text);font-size:.9rem}
+.empty{color:var(--muted);text-align:center;padding:30px;font-size:.9rem}
+.toast{position:fixed;bottom:30px;right:30px;background:var(--gold);color:#1a1206;padding:12px 22px;border-radius:10px;font-weight:600;font-size:.9rem;z-index:999;transform:translateY(80px);opacity:0;transition:all .3s}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.err{background:var(--danger);color:#fff}
+.hidden{display:none!important}
+@media(max-width:720px){.stats{grid-template-columns:1fr 1fr}.grid2{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
 
-<!-- ═══════════════════════════════════════════════
-     LOGIN
-═══════════════════════════════════════════════ -->
 <section id="login">
   <div class="login-card">
-    <div class="brand">
-      <div class="mark">ADHIKARI&nbsp;RAJAN</div>
-      <small>Admin Panel</small>
-    </div>
-    <div class="field"><label>Username</label><input id="u" type="text" autocomplete="username" placeholder="admin"></div>
-    <div class="field"><label>Password</label><input id="p" type="password" autocomplete="current-password" placeholder="••••••••"></div>
-    <button class="btn full" id="loginBtn">Sign in</button>
+    <div class="brand"><div class="mark">ADHIKARI&nbsp;RAJAN</div><small>Admin Panel</small></div>
+    <div class="field"><label>Username</label><input id="u" type="text" placeholder="admin"></div>
+    <div class="field"><label>Password</label><input id="p" type="password" placeholder="••••••••"></div>
+    <button class="btn" id="loginBtn">Sign in</button>
     <div class="err" id="loginErr"></div>
   </div>
 </section>
 
-<!-- ═══════════════════════════════════════════════
-     APP
-═══════════════════════════════════════════════ -->
 <div id="app">
   <div class="topbar">
     <div class="mark">ADHIKARI&nbsp;RAJAN</div>
@@ -194,611 +110,331 @@
       <button class="logout" id="logoutBtn">Log out</button>
     </div>
   </div>
-
   <div class="wrap">
-
-    <!-- Stats -->
     <div class="stats">
       <div class="stat"><div class="n" id="statServices">–</div><div class="t">Services</div></div>
       <div class="stat"><div class="n" id="statGallery">–</div><div class="t">Gallery Photos</div></div>
-      <div class="stat"><div class="n" id="statPosts">–</div><div class="t">Blog Posts</div></div>
       <div class="stat"><div class="n" id="statMsgs">–</div><div class="t">Unread Messages</div></div>
+      <div class="stat"><div class="n" id="statSaving">✓</div><div class="t">GitHub Sync</div></div>
     </div>
-
-    <!-- Tabs -->
     <div class="tabs">
       <button class="tab active" data-tab="services">Services</button>
       <button class="tab" data-tab="gallery">Gallery</button>
-      <button class="tab" data-tab="blog">Blog</button>
       <button class="tab" data-tab="messages">Messages</button>
-      <button class="tab" data-tab="settings">⚙ Settings</button>
     </div>
 
-    <!-- ─── SERVICES TAB ─── -->
+    <!-- SERVICES -->
     <div id="tab-services">
       <div class="panel">
         <h2 id="svcFormTitle">Add a service</h2>
-        <div class="sub">Cut name, price, and a short line — appears on your live Services page.</div>
+        <div class="sub">Fills the Services page on your live site automatically.</div>
         <div class="grid2">
           <div class="field"><label>Service name</label><input id="svcName" placeholder="Skin Fade"></div>
-          <div class="field"><label>Price (Rs.)</label><input id="svcPrice" placeholder="400"></div>
+          <div class="field"><label>Price (Rs.)</label><input id="svcPrice" placeholder="300"></div>
         </div>
         <div class="grid2">
           <div class="field"><label>Category</label><input id="svcCategory" list="catList" placeholder="The Cuts"><datalist id="catList"><option value="The Cuts"><option value="Signature"><option value="Beard & Shave"></datalist></div>
           <div class="field"><label>Tag (optional)</label><input id="svcTag" placeholder="House"></div>
         </div>
-        <div class="grid2">
-          <div class="field"><label>Duration (optional)</label><input id="svcDuration" placeholder="45 min"></div>
-          <div class="field"></div>
+        <div class="field"><label>Description</label><textarea id="svcDesc" rows="2" placeholder="A razor-clean taper from skin to length."></textarea></div>
+        <div class="field">
+          <label>Photo (optional — shows as a card on the homepage)</label>
+          <div class="uploader">
+            <label class="pickbtn" for="svcFile">Choose photo</label>
+            <input type="file" id="svcFile" accept="image/*">
+            <img class="prev" id="svcPrev">
+            <div class="status" id="svcStatus">No photo chosen.</div>
+          </div>
         </div>
-        <div class="field"><label>Description</label><textarea id="svcDesc" placeholder="Tight gradient fade with a hot-towel finish."></textarea></div>
-        <input type="hidden" id="svcEditIdx" value="">
+        <input type="hidden" id="svcImage">
+        <input type="hidden" id="svcEditId">
         <div class="row-actions">
-          <button class="btn" id="svcSave">Save service</button>
-          <button class="btn ghost hidden" id="svcCancel">Cancel edit</button>
-          <span class="status" id="svcStatus"></span>
+          <button class="btn" id="svcSave" style="width:auto;padding:11px 24px">Save service</button>
+          <button class="btn ghost" id="svcCancel" style="width:auto;padding:11px 24px;display:none">Cancel</button>
         </div>
       </div>
       <div id="svcList"></div>
     </div>
 
-    <!-- ─── GALLERY TAB ─── -->
+    <!-- GALLERY -->
     <div id="tab-gallery" class="hidden">
       <div class="panel">
         <h2>Add a gallery photo</h2>
-        <div class="sub">Upload an image — it goes to ImgBB, then the link is saved to your GitHub data file.</div>
-        <div class="uploader" id="galDrop">
+        <div class="sub">Upload a cut photo — it goes to ImgBB and saves to your site gallery instantly.</div>
+        <div class="uploader">
           <label class="pickbtn" for="galFile">Choose image</label>
           <input type="file" id="galFile" accept="image/*">
-          <img class="prev" id="galPrev" alt="preview">
-          <div class="status" id="galUpStatus">No file chosen yet.</div>
+          <img class="prev" id="galPrev">
+          <div class="status" id="galStatus">No file chosen yet.</div>
         </div>
-        <div class="field"><label>Caption (optional)</label><input id="galCap" placeholder="Classic side-part, scissor finish"></div>
+        <div class="field"><label>Caption (optional)</label><input id="galCap" placeholder="Skin fade, side profile"></div>
         <input type="hidden" id="galUrl">
-        <div class="row-actions">
-          <button class="btn" id="galSave" disabled>Add to gallery</button>
-          <span class="status" id="galStatus"></span>
-        </div>
+        <button class="btn" id="galSave" style="width:auto;padding:11px 24px" disabled>Add to gallery</button>
       </div>
       <div class="gal" id="galGrid"></div>
     </div>
 
-    <!-- ─── BLOG TAB ─── -->
-    <div id="tab-blog" class="hidden">
-      <div class="panel">
-        <h2 id="blogFormTitle">Write a new post</h2>
-        <div class="sub">Posts are saved to your GitHub repo and can be displayed on a Blog page of your website.</div>
-        <div class="field"><label>Post title</label><input id="blogTitle" placeholder="How to nail the perfect skin fade"></div>
-        <div class="grid2">
-          <div class="field"><label>Slug (URL-friendly, auto-filled)</label><input id="blogSlug" placeholder="perfect-skin-fade"></div>
-          <div class="field"><label>Category / Tag</label><input id="blogTag" placeholder="Tips, Cuts, Beard Care…"></div>
-        </div>
-        <div class="field"><label>Cover image</label>
-          <div class="uploader">
-            <label class="pickbtn" for="blogImgFile">Choose cover image</label>
-            <input type="file" id="blogImgFile" accept="image/*">
-            <img class="prev" id="blogImgPrev" alt="cover preview">
-            <div class="status" id="blogImgStatus">No cover image chosen.</div>
-          </div>
-        </div>
-        <div class="field"><label>Content (supports basic HTML like &lt;b&gt;, &lt;i&gt;, &lt;br&gt;, &lt;p&gt;)</label>
-          <textarea id="blogContent" rows="8" placeholder="Write your post here…&#10;&#10;You can use basic HTML tags like:&#10;&lt;b&gt;bold&lt;/b&gt;, &lt;i&gt;italic&lt;/i&gt;, &lt;br&gt; for line breaks, &lt;p&gt; for paragraphs."></textarea>
-        </div>
-        <input type="hidden" id="blogEditIdx" value="">
-        <div class="row-actions">
-          <button class="btn" id="blogSave">Publish post</button>
-          <button class="btn ghost hidden" id="blogCancel">Cancel edit</button>
-          <span class="status" id="blogStatus"></span>
-        </div>
-      </div>
-      <div id="postList"></div>
-    </div>
-
-    <!-- ─── MESSAGES TAB ─── -->
+    <!-- MESSAGES -->
     <div id="tab-messages" class="hidden">
       <div class="panel">
         <h2>Booking & contact messages</h2>
-        <div class="sub">Requests submitted from your Contact page. Tap a message to mark it read.</div>
-        <div class="row-actions" style="margin-top:0">
-          <button class="btn danger" id="clearMsgs">Clear all messages</button>
-          <span class="status" id="msgStatus"></span>
-        </div>
+        <div class="sub">Requests from your Contact page.</div>
+        <button class="btn danger" id="clearMsgs" style="width:auto;padding:9px 18px;margin-top:4px">Clear all</button>
       </div>
       <div id="msgList"></div>
     </div>
+  </div>
+</div>
 
-    <!-- ─── SETTINGS TAB ─── -->
-    <div id="tab-settings" class="hidden">
-      <div class="panel">
-        <h2>GitHub Connection</h2>
-        <div class="sub">These settings tell the admin panel where to save your data. Stored only in your browser.</div>
-        <div class="setup-box" id="setupGuide">
-          <b>How to set up:</b><br>
-          1. Go to <b>GitHub → Settings → Developer Settings → Personal access tokens → Tokens (classic)</b><br>
-          2. Generate new token with <code>repo</code> scope<br>
-          3. Copy the token and paste it below<br>
-          4. Fill in your GitHub username and repo name<br>
-          5. Click <b>Save & test connection</b>
-        </div>
-        <div class="grid2">
-          <div class="field"><label>GitHub Username</label><input id="cfgUser" placeholder="rajanalisonadhikari-beep"></div>
-          <div class="field"><label>Repository Name</label><input id="cfgRepo" placeholder="adhikari-rajan-website-"></div>
-        </div>
-        <div class="field"><label>Branch</label><input id="cfgBranch" placeholder="main"></div>
-        <div class="field"><label>Personal Access Token (PAT)</label><input id="cfgToken" type="password" placeholder="ghp_…" autocomplete="off"></div>
-        <div class="row-actions">
-          <button class="btn" id="cfgSave">Save &amp; test connection</button>
-          <span class="status" id="cfgStatus"></span>
-        </div>
-      </div>
-      <div class="panel">
-        <h2>Login Credentials</h2>
-        <div class="sub">Change your admin panel username and password. Stored in your browser.</div>
-        <div class="grid2">
-          <div class="field"><label>New Username</label><input id="newUser" placeholder="admin"></div>
-          <div class="field"><label>New Password</label><input id="newPass" type="password" placeholder="••••••••"></div>
-        </div>
-        <div class="row-actions">
-          <button class="btn" id="credSave">Update credentials</button>
-          <span class="status" id="credStatus"></span>
-        </div>
-      </div>
-      <div class="panel">
-        <h2>ImgBB API Key</h2>
-        <div class="sub">Used for uploading gallery and blog cover images. Get a free key at <b>imgbb.com</b>.</div>
-        <div class="field"><label>ImgBB API Key</label><input id="cfgImgbb" type="password" placeholder="fb46f1…" autocomplete="off"></div>
-        <div class="row-actions">
-          <button class="btn" id="imgbbSave">Save key</button>
-          <span class="status" id="imgbbStatus"></span>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- /wrap -->
-</div><!-- /app -->
-
-<div id="toast"></div>
+<div class="toast" id="toast"></div>
 
 <script>
-/* ═══════════════════════════════════════════════════════
-   CONFIG — all stored in localStorage, managed via Settings tab
-═══════════════════════════════════════════════════════ */
-const LS = {
-  get: k => localStorage.getItem('ar_'+k),
-  set: (k,v) => localStorage.setItem('ar_'+k, v),
-  del: k => localStorage.removeItem('ar_'+k),
-};
+// ── CONFIG ──────────────────────────────────────────────────
+const ADMIN_USER = "admin";
+const ADMIN_PASS = "rajan2024";
+const IMGBB_KEY  = "fb46f1930c5de23cfa83e7a6fa4f8a0b";
+const GH_TOKEN   = "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";
+const GH_USER    = "rajanalisonadhikari-beep";
+const GH_REPO    = "adhikari-rajan-website-";
+const GH_BRANCH  = "main";
 
-// Default credentials (can be changed in Settings)
-const DEFAULT_USER = 'admin';
-const DEFAULT_PASS = 'rajan2024';
-
-function getCreds(){ return { user: LS.get('cred_user')||DEFAULT_USER, pass: LS.get('cred_pass')||DEFAULT_PASS }; }
-function getGH(){   return { user: LS.get('gh_user')||'', repo: LS.get('gh_repo')||'', branch: LS.get('gh_branch')||'main', token: LS.get('gh_token')||'' }; }
-function getImgbbKey(){ return LS.get('imgbb_key')||'fb46f1930c5de23cfa83e7a6fa4f8a0b'; }
-function isLoggedIn(){ return LS.get('session')==='1'; }
-
-/* ── TOAST ── */
-let _toastTimer;
-function toast(msg, type=''){
-  const el = document.getElementById('toast');
-  el.textContent = msg; el.className = 'show' + (type?' '+type:'');
-  clearTimeout(_toastTimer);
-  _toastTimer = setTimeout(()=>{ el.className=''; }, 3200);
-}
-function setStatus(id, msg, type=''){
-  const el = document.getElementById(id); if(!el)return;
-  el.textContent = msg; el.className = 'status'+(type?' '+type:'');
-}
-
-/* ═══════════════════════════════════════════════════════
-   GITHUB API — read/write JSON files in the repo
-═══════════════════════════════════════════════════════ */
-async function ghGet(path){
-  const {user,repo,branch,token} = getGH();
-  if(!user||!repo||!token) throw new Error('GitHub not configured. Go to ⚙ Settings.');
-  const url = `https://api.github.com/repos/${user}/${repo}/contents/${path}?ref=${branch}`;
-  const res = await fetch(url, { headers: { Authorization: 'token '+token, Accept: 'application/vnd.github.v3+json' } });
-  if(res.status===404) return null; // file doesn't exist yet
-  if(!res.ok){ const e=await res.json().catch(()=>({})); throw new Error(e.message||'GitHub read error'); }
-  const data = await res.json();
-  const text = atob(data.content.replace(/\n/g,''));
-  return { data: JSON.parse(text), sha: data.sha };
-}
-
-async function ghWrite(path, content, sha){
-  const {user,repo,branch,token} = getGH();
-  const body = {
-    message: sha ? `admin: update ${path}` : `admin: create ${path}`,
-    content: btoa(unescape(encodeURIComponent(JSON.stringify(content, null, 2)))),
-    branch,
-  };
-  if(sha) body.sha = sha;
-  const res = await fetch(`https://api.github.com/repos/${user}/${repo}/contents/${path}`, {
-    method: 'PUT',
-    headers: { Authorization: 'token '+token, Accept: 'application/vnd.github.v3+json', 'Content-Type': 'application/json' },
-    body: JSON.stringify(body),
+// ── GITHUB HELPERS ──────────────────────────────────────────
+async function ghGet(path) {
+  const url = `https://raw.githubusercontent.com/${GH_USER}/${GH_REPO}/${GH_BRANCH}/${path}?t=${Date.now()}`;
+  const res = await fetch(url);
+  if (!res.ok) return { data: [], sha: null };
+  const text = await res.text();
+  // get sha via API
+  const api = await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${path}`, {
+    headers: { Authorization: `token ${GH_TOKEN}` }
   });
-  if(!res.ok){ const e=await res.json().catch(()=>({})); throw new Error(e.message||'GitHub write error'); }
-  return res.json();
+  const meta = await api.json();
+  return { data: JSON.parse(text), sha: meta.sha };
 }
 
-// Load a data file (returns [] if not found), plus its sha
-async function loadFile(path){
-  try{ const r = await ghGet(path); return r ? { arr: r.data, sha: r.sha } : { arr: [], sha: null }; }
-  catch(e){ throw e; }
+async function ghPut(path, data, sha) {
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+  const body = { message: `Update ${path}`, content, branch: GH_BRANCH };
+  if (sha) body.sha = sha;
+  const res = await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${path}`, {
+    method: "PUT",
+    headers: { Authorization: `token ${GH_TOKEN}`, "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  return res.ok;
 }
 
-/* ═══════════════════════════════════════════════════════
-   IMGBB UPLOAD
-═══════════════════════════════════════════════════════ */
-async function uploadToImgbb(file){
-  const fd = new FormData();
-  fd.append('image', file);
-  const res = await fetch('https://api.imgbb.com/1/upload?key='+getImgbbKey(), { method:'POST', body:fd });
-  const data = await res.json();
-  if(data&&data.success) return data.data.url;
-  throw new Error('ImgBB upload failed. Check your API key in Settings.');
-}
+// ── AUTH ────────────────────────────────────────────────────
+const loginSec = document.getElementById("login");
+const appSec   = document.getElementById("app");
+function showApp(){ loginSec.style.display="none"; appSec.style.display="block"; renderAll(); }
+if (sessionStorage.getItem("ar_admin")==="1") showApp();
 
-/* ═══════════════════════════════════════════════════════
-   DATA PATHS
-═══════════════════════════════════════════════════════ */
-const PATHS = { services:'data/services.json', gallery:'data/gallery.json', posts:'data/posts.json', messages:'data/messages.json' };
-
-let DATA = { services:[], servicesSha:null, gallery:[], gallerySha:null, posts:[], postsSha:null, messages:[], messagesSha:null };
-
-async function loadAll(){
-  const [sv,ga,po,ms] = await Promise.all([
-    loadFile(PATHS.services), loadFile(PATHS.gallery),
-    loadFile(PATHS.posts), loadFile(PATHS.messages),
-  ]);
-  DATA.services=sv.arr; DATA.servicesSha=sv.sha;
-  DATA.gallery=ga.arr;  DATA.gallerySha=ga.sha;
-  DATA.posts=po.arr;    DATA.postsSha=po.sha;
-  DATA.messages=ms.arr; DATA.messagesSha=ms.sha;
-  renderAll();
-}
-
-/* ═══════════════════════════════════════════════════════
-   HELPERS
-═══════════════════════════════════════════════════════ */
-function esc(s){ return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
-function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,6); }
-function slugify(s){ return s.toLowerCase().trim().replace(/[^\w\s-]/g,'').replace(/\s+/g,'-').replace(/-+/g,'-'); }
-
-/* ═══════════════════════════════════════════════════════
-   LOGIN / SESSION
-═══════════════════════════════════════════════════════ */
-const loginSec = document.getElementById('login');
-const appSec   = document.getElementById('app');
-
-function showApp(){ loginSec.style.display='none'; appSec.style.display='block'; loadAll().catch(e=>toast(e.message,'bad')); }
-if(isLoggedIn()) showApp();
-
-document.getElementById('loginBtn').onclick = async () => {
-  const u = document.getElementById('u').value.trim();
-  const p = document.getElementById('p').value;
-  const err = document.getElementById('loginErr');
-  const creds = getCreds();
-  if(u===creds.user && p===creds.pass){
-    LS.set('session','1'); err.textContent=''; showApp();
-  } else {
-    err.textContent='Wrong username or password.';
-  }
+document.getElementById("loginBtn").onclick = () => {
+  const u = document.getElementById("u").value.trim();
+  const p = document.getElementById("p").value;
+  if (u===ADMIN_USER && p===ADMIN_PASS) { sessionStorage.setItem("ar_admin","1"); showApp(); }
+  else document.getElementById("loginErr").textContent = "Wrong username or password.";
 };
-document.getElementById('p').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('loginBtn').click(); });
-document.getElementById('u').addEventListener('keydown', e=>{ if(e.key==='Enter') document.getElementById('p').focus(); });
-document.getElementById('logoutBtn').onclick = ()=>{ LS.del('session'); location.reload(); };
+document.getElementById("p").addEventListener("keydown", e => { if(e.key==="Enter") document.getElementById("loginBtn").click(); });
+document.getElementById("logoutBtn").onclick = () => { sessionStorage.removeItem("ar_admin"); location.reload(); };
 
-/* ── TABS ── */
-document.querySelectorAll('.tab').forEach(t => t.onclick = ()=>{
-  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-  t.classList.add('active');
-  ['services','gallery','blog','messages','settings'].forEach(name=>
-    document.getElementById('tab-'+name).classList.toggle('hidden', name!==t.dataset.tab));
+// ── TABS ────────────────────────────────────────────────────
+document.querySelectorAll(".tab").forEach(t => t.onclick = () => {
+  document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));
+  t.classList.add("active");
+  ["services","gallery","messages"].forEach(n => document.getElementById("tab-"+n).classList.toggle("hidden", n!==t.dataset.tab));
 });
 
-/* ═══════════════════════════════════════════════════════
-   SERVICES
-═══════════════════════════════════════════════════════ */
-const $ = id => document.getElementById(id);
-function resetSvcForm(){
-  $('svcName').value=$('svcPrice').value=$('svcDuration').value=$('svcTag').value=$('svcCategory').value=$('svcDesc').value=$('svcEditIdx').value='';
-  $('svcFormTitle').textContent='Add a service';
-  $('svcCancel').classList.add('hidden');
-  setStatus('svcStatus','');
+// ── TOAST ───────────────────────────────────────────────────
+function toast(msg, isErr=false) {
+  const el = document.getElementById("toast");
+  el.textContent = msg; el.className = "toast show" + (isErr?" err":"");
+  setTimeout(()=>el.className="toast", 3000);
 }
-$('svcCancel').onclick = resetSvcForm;
 
-$('svcSave').onclick = async ()=>{
-  const name=$('svcName').value.trim(); if(!name){ $('svcName').focus(); return; }
-  const entry = { id: uid(), name, price:$('svcPrice').value.trim(), duration:$('svcDuration').value.trim(), tag:$('svcTag').value.trim(), category:$('svcCategory').value.trim(), desc:$('svcDesc').value.trim() };
-  setStatus('svcStatus','<span class="spinner"></span> Saving…','info');
-  $('svcSave').disabled=true;
-  try{
-    const idx=$('svcEditIdx').value;
-    if(idx!=='') { entry.id=DATA.services[idx].id; DATA.services[idx]=entry; }
-    else { entry.id=uid(); DATA.services.push(entry); }
-    const r = await ghWrite(PATHS.services, DATA.services, DATA.servicesSha);
-    DATA.servicesSha = r.content.sha;
-    resetSvcForm(); renderServices(); updateStats();
-    toast('Service saved ✓','ok');
-  }catch(e){ toast(e.message,'bad'); }
-  finally{ $('svcSave').disabled=false; setStatus('svcStatus',''); }
+// ── STATE ───────────────────────────────────────────────────
+let SERVICES=[], SERVICES_SHA=null;
+let GALLERY=[], GALLERY_SHA=null;
+let MESSAGES=[], MESSAGES_SHA=null;
+
+// ── SERVICES ────────────────────────────────────────────────
+const svcName=document.getElementById("svcName"), svcPrice=document.getElementById("svcPrice"),
+      svcCategory=document.getElementById("svcCategory"), svcTag=document.getElementById("svcTag"),
+      svcDesc=document.getElementById("svcDesc"), svcEditId=document.getElementById("svcEditId"),
+      svcFile=document.getElementById("svcFile"), svcPrev=document.getElementById("svcPrev"),
+      svcStatus=document.getElementById("svcStatus"), svcImage=document.getElementById("svcImage");
+
+svcFile.onchange = async () => {
+  const file = svcFile.files[0]; if(!file) return;
+  svcPrev.src=URL.createObjectURL(file); svcPrev.style.display="block";
+  svcStatus.className="status"; svcStatus.textContent="Uploading…";
+  try {
+    const fd=new FormData(); fd.append("image",file);
+    const res=await fetch("https://api.imgbb.com/1/upload?key="+IMGBB_KEY,{method:"POST",body:fd});
+    const data=await res.json();
+    if(data&&data.success){ svcImage.value=data.data.url; svcStatus.className="status ok"; svcStatus.textContent="Photo ready."; }
+    else throw new Error();
+  } catch { svcStatus.className="status bad"; svcStatus.textContent="Upload failed."; }
 };
 
-function editSvc(idx){
-  const s=DATA.services[idx]; if(!s) return;
-  $('svcName').value=s.name; $('svcPrice').value=s.price||''; $('svcDuration').value=s.duration||'';
-  $('svcTag').value=s.tag||''; $('svcCategory').value=s.category||''; $('svcDesc').value=s.desc||'';
-  $('svcEditIdx').value=idx;
-  $('svcFormTitle').textContent='Edit service';
-  $('svcCancel').classList.remove('hidden');
-  window.scrollTo({top:0,behavior:'smooth'});
+function resetSvcForm(){
+  svcName.value=svcPrice.value=svcCategory.value=svcTag.value=svcDesc.value=svcEditId.value=svcImage.value="";
+  svcFile.value=""; svcPrev.style.display="none"; svcStatus.className="status"; svcStatus.textContent="No photo chosen.";
+  document.getElementById("svcFormTitle").textContent="Add a service";
+  document.getElementById("svcCancel").style.display="none";
 }
-async function delSvc(idx){
-  if(!confirm('Delete this service?')) return;
-  DATA.services.splice(idx,1);
-  try{
-    const r = await ghWrite(PATHS.services, DATA.services, DATA.servicesSha);
-    DATA.servicesSha=r.content.sha; renderServices(); updateStats(); toast('Service deleted.','ok');
-  }catch(e){ toast(e.message,'bad'); DATA.services.splice(idx,0,DATA.services[idx]); }
+document.getElementById("svcCancel").onclick = resetSvcForm;
+
+document.getElementById("svcSave").onclick = async () => {
+  const name=svcName.value.trim(); if(!name){ svcName.focus(); return; }
+  const entry = { id: svcEditId.value||Date.now().toString(36), name, price:svcPrice.value.trim(), category:svcCategory.value.trim(), tag:svcTag.value.trim(), desc:svcDesc.value.trim(), image:svcImage.value.trim() };
+  if(svcEditId.value){ const i=SERVICES.findIndex(s=>s.id===svcEditId.value); if(i>-1) SERVICES[i]=entry; }
+  else SERVICES.push(entry);
+  document.getElementById("svcSave").disabled=true;
+  const ok = await ghPut("data/services.json", SERVICES, SERVICES_SHA);
+  document.getElementById("svcSave").disabled=false;
+  if(ok){ toast("Service saved ✓"); resetSvcForm(); await loadData(); renderAll(); }
+  else toast("Save failed — check token", true);
+};
+
+function editSvc(id){
+  const s=SERVICES.find(x=>x.id===id); if(!s) return;
+  svcName.value=s.name; svcPrice.value=s.price||""; svcCategory.value=s.category||"";
+  svcTag.value=s.tag||""; svcDesc.value=s.desc||""; svcEditId.value=s.id; svcImage.value=s.image||"";
+  if(s.image){ svcPrev.src=s.image; svcPrev.style.display="block"; svcStatus.className="status ok"; svcStatus.textContent="Current photo. Choose new to replace."; }
+  document.getElementById("svcFormTitle").textContent="Edit service";
+  document.getElementById("svcCancel").style.display="inline-block";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+async function delSvc(id){
+  if(!confirm("Delete this service?")) return;
+  SERVICES=SERVICES.filter(s=>s.id!==id);
+  const ok=await ghPut("data/services.json",SERVICES,SERVICES_SHA);
+  if(ok){ toast("Deleted ✓"); await loadData(); renderAll(); } else toast("Delete failed",true);
 }
 
 function renderServices(){
-  const wrap=$('svcList');
-  if(!DATA.services.length){ wrap.innerHTML='<div class="empty">No services yet. Add your first one above.</div>'; return; }
-  wrap.innerHTML=DATA.services.map((s,i)=>`
-    <div class="item"><div class="body">
-      ${s.category?`<div class="meta">${esc(s.category)}</div>`:''}
-      <div class="name">${esc(s.name)}${s.tag?`<span class="item-tag">${esc(s.tag)}</span>`:''}</div>
-      ${s.price?`<div class="price">Rs.&nbsp;${esc(s.price)}${s.duration?` <span style="font-size:.7rem;color:var(--muted)">/ ${esc(s.duration)}</span>`:''}</div>`:''}
-      ${s.desc?`<div class="desc">${esc(s.desc)}</div>`:''}
-    </div><div class="item-actions">
-      <button class="mini" onclick="editSvc(${i})">Edit</button>
-      <button class="mini del" onclick="delSvc(${i})">Delete</button>
-    </div></div>`).join('');
+  const wrap=document.getElementById("svcList");
+  if(!SERVICES.length){ wrap.innerHTML='<div class="empty">No services yet.</div>'; return; }
+  wrap.innerHTML=SERVICES.map(s=>`
+    <div class="item">
+      ${s.image?`<img src="${esc(s.image)}" style="width:64px;height:64px;object-fit:cover;border-radius:9px;border:1px solid var(--line);flex:0 0 auto">`:``}
+      <div class="body">
+        ${s.category?`<div class="meta">${esc(s.category)}</div>`:""}
+        <div class="name">${esc(s.name)}${s.tag?` <span style="font-size:.65rem;color:var(--gold);border:1px solid var(--line);border-radius:5px;padding:2px 6px">${esc(s.tag)}</span>`:""}</div>
+        ${s.price?`<div class="price">Rs. ${esc(s.price)}</div>`:""}
+        ${s.desc?`<div class="desc">${esc(s.desc)}</div>`:""}
+      </div>
+      <div class="item-actions">
+        <button class="mini" onclick="editSvc('${s.id}')">Edit</button>
+        <button class="mini del" onclick="delSvc('${s.id}')">Delete</button>
+      </div>
+    </div>`).join("");
 }
 
-/* ═══════════════════════════════════════════════════════
-   GALLERY
-═══════════════════════════════════════════════════════ */
-$('galFile').onchange = async ()=>{
-  const file=$('galFile').files[0]; if(!file) return;
-  $('galPrev').src=URL.createObjectURL(file); $('galPrev').style.display='block';
-  setStatus('galUpStatus','Uploading to ImgBB…','info'); $('galSave').disabled=true;
-  try{
-    const url=await uploadToImgbb(file);
-    $('galUrl').value=url; setStatus('galUpStatus','Uploaded ✓ — add a caption and click "Add to gallery".','ok');
-    $('galSave').disabled=false;
-  }catch(e){ setStatus('galUpStatus',e.message,'bad'); $('galSave').disabled=true; }
+// ── GALLERY ─────────────────────────────────────────────────
+const galFile=document.getElementById("galFile"), galPrev=document.getElementById("galPrev"),
+      galStatus=document.getElementById("galStatus"), galUrl=document.getElementById("galUrl"),
+      galSave=document.getElementById("galSave"), galCap=document.getElementById("galCap");
+
+galFile.onchange = async () => {
+  const file=galFile.files[0]; if(!file) return;
+  galPrev.src=URL.createObjectURL(file); galPrev.style.display="block";
+  galStatus.className="status"; galStatus.textContent="Uploading…"; galSave.disabled=true;
+  try {
+    const fd=new FormData(); fd.append("image",file);
+    const res=await fetch("https://api.imgbb.com/1/upload?key="+IMGBB_KEY,{method:"POST",body:fd});
+    const data=await res.json();
+    if(data&&data.success){ galUrl.value=data.data.url; galStatus.className="status ok"; galStatus.textContent='Uploaded. Click "Add to gallery".'; galSave.disabled=false; }
+    else throw new Error();
+  } catch { galStatus.className="status bad"; galStatus.textContent="Upload failed."; }
 };
 
-$('galSave').onclick = async ()=>{
-  if(!$('galUrl').value) return;
-  const entry={ id:uid(), url:$('galUrl').value, cap:$('galCap').value.trim(), addedAt:new Date().toISOString() };
-  $('galSave').disabled=true; setStatus('galStatus','Saving…','info');
-  try{
-    DATA.gallery.push(entry);
-    const r=await ghWrite(PATHS.gallery, DATA.gallery, DATA.gallerySha);
-    DATA.gallerySha=r.content.sha;
-    $('galFile').value=''; $('galPrev').style.display='none'; $('galUrl').value=''; $('galCap').value='';
-    setStatus('galUpStatus','No file chosen yet.',''); setStatus('galStatus','');
-    renderGallery(); updateStats(); toast('Photo added ✓','ok');
-  }catch(e){ toast(e.message,'bad'); DATA.gallery.pop(); }
-  finally{ $('galSave').disabled=false; }
+galSave.onclick = async () => {
+  if(!galUrl.value) return;
+  GALLERY.unshift({ id: Date.now().toString(36), url: galUrl.value, cap: galCap.value.trim() });
+  galSave.disabled=true;
+  const ok=await ghPut("data/gallery.json",GALLERY,GALLERY_SHA);
+  galSave.disabled=false;
+  if(ok){
+    toast("Photo added ✓");
+    galFile.value=""; galPrev.style.display="none"; galUrl.value=""; galCap.value="";
+    galStatus.className="status"; galStatus.textContent="No file chosen yet.";
+    await loadData(); renderAll();
+  } else toast("Save failed",true);
 };
 
-async function delGal(idx){
-  if(!confirm('Remove this photo?')) return;
-  const removed=DATA.gallery.splice(idx,1);
-  try{
-    const r=await ghWrite(PATHS.gallery, DATA.gallery, DATA.gallerySha);
-    DATA.gallerySha=r.content.sha; renderGallery(); updateStats(); toast('Photo removed.','ok');
-  }catch(e){ toast(e.message,'bad'); DATA.gallery.splice(idx,0,...removed); }
+async function delGal(id){
+  if(!confirm("Remove this photo?")) return;
+  GALLERY=GALLERY.filter(g=>g.id!==id);
+  const ok=await ghPut("data/gallery.json",GALLERY,GALLERY_SHA);
+  if(ok){ toast("Removed ✓"); await loadData(); renderAll(); } else toast("Delete failed",true);
 }
 
 function renderGallery(){
-  const grid=$('galGrid');
-  if(!DATA.gallery.length){ grid.innerHTML='<div class="empty">No photos yet. Upload your first cut above.</div>'; return; }
-  grid.innerHTML=DATA.gallery.map((g,i)=>`
+  const grid=document.getElementById("galGrid");
+  if(!GALLERY.length){ grid.innerHTML='<div class="empty">No photos yet.</div>'; return; }
+  grid.innerHTML=GALLERY.map(g=>`
     <div class="gcard">
-      <button class="x" onclick="delGal(${i})" title="Remove">×</button>
-      <img src="${esc(g.url)}" alt="${esc(g.cap||'Gallery photo')}">
-      ${g.cap?`<div class="cap">${esc(g.cap)}</div>`:''}
-    </div>`).join('');
+      <button class="x" onclick="delGal('${g.id}')">×</button>
+      <img src="${esc(g.url)}" alt="${esc(g.cap||'')}">
+      ${g.cap?`<div class="cap">${esc(g.cap)}</div>`:""}
+    </div>`).join("");
 }
 
-/* ═══════════════════════════════════════════════════════
-   BLOG
-═══════════════════════════════════════════════════════ */
-let blogCoverUrl='';
-
-$('blogTitle').oninput = ()=>{
-  if(!$('blogEditIdx').value) $('blogSlug').value=slugify($('blogTitle').value);
-};
-
-$('blogImgFile').onchange = async ()=>{
-  const file=$('blogImgFile').files[0]; if(!file) return;
-  $('blogImgPrev').src=URL.createObjectURL(file); $('blogImgPrev').style.display='block';
-  setStatus('blogImgStatus','Uploading cover image…','info');
-  try{
-    blogCoverUrl=await uploadToImgbb(file);
-    setStatus('blogImgStatus','Cover uploaded ✓','ok');
-  }catch(e){ setStatus('blogImgStatus',e.message,'bad'); blogCoverUrl=''; }
-};
-
-function resetBlogForm(){
-  $('blogTitle').value=$('blogSlug').value=$('blogTag').value=$('blogContent').value=$('blogEditIdx').value='';
-  $('blogImgFile').value=''; $('blogImgPrev').style.display='none'; blogCoverUrl='';
-  setStatus('blogImgStatus','No cover image chosen.'); setStatus('blogStatus','');
-  $('blogFormTitle').textContent='Write a new post';
-  $('blogCancel').classList.add('hidden');
-}
-$('blogCancel').onclick=resetBlogForm;
-
-$('blogSave').onclick = async ()=>{
-  const title=$('blogTitle').value.trim(); if(!title){ $('blogTitle').focus(); return; }
-  const slug=$('blogSlug').value.trim()||slugify(title);
-  const entry={
-    id:uid(), title, slug, tag:$('blogTag').value.trim(),
-    cover:blogCoverUrl, content:$('blogContent').value.trim(),
-    publishedAt:new Date().toISOString()
-  };
-  $('blogSave').disabled=true; setStatus('blogStatus','Publishing…','info');
-  try{
-    const idx=$('blogEditIdx').value;
-    if(idx!=='') { entry.id=DATA.posts[idx].id; entry.publishedAt=DATA.posts[idx].publishedAt; DATA.posts[idx]=entry; }
-    else { DATA.posts.unshift(entry); }
-    const r=await ghWrite(PATHS.posts, DATA.posts, DATA.postsSha);
-    DATA.postsSha=r.content.sha;
-    resetBlogForm(); renderPosts(); updateStats(); toast('Post published ✓','ok');
-  }catch(e){ toast(e.message,'bad'); if($('blogEditIdx').value==='') DATA.posts.shift(); }
-  finally{ $('blogSave').disabled=false; setStatus('blogStatus',''); }
-};
-
-function editPost(idx){
-  const p=DATA.posts[idx]; if(!p) return;
-  $('blogTitle').value=p.title; $('blogSlug').value=p.slug; $('blogTag').value=p.tag||'';
-  $('blogContent').value=p.content||''; $('blogEditIdx').value=idx;
-  blogCoverUrl=p.cover||'';
-  if(p.cover){ $('blogImgPrev').src=p.cover; $('blogImgPrev').style.display='block'; setStatus('blogImgStatus','Existing cover loaded.','ok'); }
-  $('blogFormTitle').textContent='Edit post';
-  $('blogCancel').classList.remove('hidden');
-  // switch to blog tab
-  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-  document.querySelector('[data-tab="blog"]').classList.add('active');
-  ['services','gallery','blog','messages','settings'].forEach(n=>$('tab-'+n).classList.toggle('hidden',n!=='blog'));
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-async function delPost(idx){
-  if(!confirm('Delete this post? Cannot be undone.')) return;
-  const removed=DATA.posts.splice(idx,1);
-  try{
-    const r=await ghWrite(PATHS.posts, DATA.posts, DATA.postsSha);
-    DATA.postsSha=r.content.sha; renderPosts(); updateStats(); toast('Post deleted.','ok');
-  }catch(e){ toast(e.message,'bad'); DATA.posts.splice(idx,0,...removed); }
-}
-
-function renderPosts(){
-  const wrap=$('postList');
-  if(!DATA.posts.length){ wrap.innerHTML='<div class="empty">No posts yet. Write your first one above.</div>'; return; }
-  wrap.innerHTML=DATA.posts.map((p,i)=>`
-    <div class="post">
-      <div class="post-top">
-        ${p.cover
-          ? `<img class="post-img" src="${esc(p.cover)}" alt="${esc(p.title)}">`
-          : `<div class="post-img none">No cover</div>`}
-        <div class="post-body">
-          <div class="post-title">${esc(p.title)}</div>
-          <div class="post-meta">${p.tag?`<span style="color:var(--gold)">${esc(p.tag)}</span> · `:''} ${p.publishedAt?new Date(p.publishedAt).toLocaleDateString('en-NP',{year:'numeric',month:'short',day:'numeric'}):''}</div>
-          <div class="post-excerpt">${esc(p.content||'').replace(/<[^>]+>/g,'')}</div>
-        </div>
-      </div>
-      <div class="post-actions">
-        <button class="mini" onclick="editPost(${i})">Edit</button>
-        <button class="mini del" onclick="delPost(${i})">Delete</button>
-      </div>
-    </div>`).join('');
-}
-
-/* ═══════════════════════════════════════════════════════
-   MESSAGES
-═══════════════════════════════════════════════════════ */
-async function markRead(idx){
-  const m=DATA.messages[idx]; if(!m||m.read) return;
-  DATA.messages[idx].read=true;
-  try{
-    const r=await ghWrite(PATHS.messages, DATA.messages, DATA.messagesSha);
-    DATA.messagesSha=r.content.sha; renderMessages(); updateStats();
-  }catch(e){ toast(e.message,'bad'); DATA.messages[idx].read=false; }
-}
-
-$('clearMsgs').onclick=async()=>{
-  if(!confirm('Delete ALL messages? This cannot be undone.')) return;
-  const bak=[...DATA.messages]; const bakSha=DATA.messagesSha;
-  DATA.messages=[];
-  try{
-    const r=await ghWrite(PATHS.messages, [], DATA.messagesSha);
-    DATA.messagesSha=r.content.sha; renderMessages(); updateStats(); toast('All messages cleared.','ok');
-  }catch(e){ toast(e.message,'bad'); DATA.messages=bak; DATA.messagesSha=bakSha; }
-};
-
+// ── MESSAGES ────────────────────────────────────────────────
 function renderMessages(){
-  const wrap=$('msgList');
-  if(!DATA.messages.length){ wrap.innerHTML='<div class="empty">No messages yet. Contact form submissions appear here.</div>'; return; }
-  const sorted=[...DATA.messages].reverse();
-  wrap.innerHTML=sorted.map((m,ri)=>{
-    const i=DATA.messages.length-1-ri;
-    return `<div class="msg ${m.read?'':'unread'}" onclick="markRead(${i})">
-      <div class="head">
-        <span class="who">${esc(m.name||'Someone')}${!m.read?'<span class="unread-dot"></span>':''}</span>
-        <span class="when">${m.createdAt?new Date(m.createdAt).toLocaleString():''}</span>
-      </div>
+  const wrap=document.getElementById("msgList");
+  if(!MESSAGES.length){ wrap.innerHTML='<div class="empty">No messages yet.</div>'; return; }
+  wrap.innerHTML=MESSAGES.map(m=>`
+    <div class="msg ${m.read?'':'unread'}" onclick="markRead('${m.id}')">
+      <div class="head"><span class="who">${esc(m.name||'Someone')}</span><span class="when">${m.time?new Date(m.time).toLocaleString():''}</span></div>
       <div class="contact">${esc(m.phone||'')}${m.phone&&m.email?' · ':''}${esc(m.email||'')}</div>
       <div class="text">${esc(m.message||'')}</div>
-    </div>`;
-  }).join('');
+    </div>`).join("");
 }
 
-/* ═══════════════════════════════════════════════════════
-   SETTINGS
-═══════════════════════════════════════════════════════ */
-function loadSettingsUI(){
-  const gh=getGH();
-  $('cfgUser').value=gh.user; $('cfgRepo').value=gh.repo; $('cfgBranch').value=gh.branch;
-  $('cfgToken').value=gh.token;
-  $('cfgImgbb').value=getImgbbKey();
-  const c=getCreds(); $('newUser').value=c.user; $('newPass').value='';
+async function markRead(id){
+  const m=MESSAGES.find(x=>x.id===id); if(!m||m.read) return;
+  m.read=true;
+  await ghPut("data/messages.json",MESSAGES,MESSAGES_SHA);
+  renderMessages();
+  document.getElementById("statMsgs").textContent=MESSAGES.filter(m=>!m.read).length;
 }
 
-$('cfgSave').onclick=async()=>{
-  const user=$('cfgUser').value.trim(), repo=$('cfgRepo').value.trim(),
-        branch=$('cfgBranch').value.trim()||'main', token=$('cfgToken').value.trim();
-  if(!user||!repo||!token){ setStatus('cfgStatus','Please fill in all fields.','bad'); return; }
-  LS.set('gh_user',user); LS.set('gh_repo',repo); LS.set('gh_branch',branch); LS.set('gh_token',token);
-  setStatus('cfgStatus','Testing connection…','info');
-  try{
-    const res=await fetch(`https://api.github.com/repos/${user}/${repo}`,{headers:{Authorization:'token '+token,Accept:'application/vnd.github.v3+json'}});
-    if(!res.ok) throw new Error('Cannot access repo — check username, repo name, and token permissions.');
-    setStatus('cfgStatus','Connected ✓ Reloading data…','ok');
-    toast('GitHub connected ✓','ok');
-    setTimeout(()=>loadAll().catch(e=>toast(e.message,'bad')),500);
-  }catch(e){ setStatus('cfgStatus',e.message,'bad'); }
+document.getElementById("clearMsgs").onclick = async () => {
+  if(!confirm("Delete ALL messages?")) return;
+  MESSAGES=[];
+  const ok=await ghPut("data/messages.json",MESSAGES,MESSAGES_SHA);
+  if(ok){ toast("Cleared ✓"); await loadData(); renderAll(); } else toast("Failed",true);
 };
 
-$('credSave').onclick=()=>{
-  const u=$('newUser').value.trim(), p=$('newPass').value;
-  if(!u||!p){ setStatus('credStatus','Enter both username and password.','bad'); return; }
-  LS.set('cred_user',u); LS.set('cred_pass',p);
-  setStatus('credStatus','Credentials updated ✓','ok'); toast('Login credentials updated ✓','ok');
-};
-
-$('imgbbSave').onclick=()=>{
-  const k=$('cfgImgbb').value.trim(); if(!k){ setStatus('imgbbStatus','Enter a key.','bad'); return; }
-  LS.set('imgbb_key',k); setStatus('imgbbStatus','Key saved ✓','ok'); toast('ImgBB key saved ✓','ok');
-};
-
-/* ═══════════════════════════════════════════════════════
-   RENDER ALL + STATS
-═══════════════════════════════════════════════════════ */
-function updateStats(){
-  $('statServices').textContent = DATA.services.length;
-  $('statGallery').textContent  = DATA.gallery.length;
-  $('statPosts').textContent    = DATA.posts.length;
-  $('statMsgs').textContent     = DATA.messages.filter(m=>!m.read).length;
+// ── LOAD + RENDER ────────────────────────────────────────────
+async function loadData(){
+  try {
+    const [sv,ga,ms]=await Promise.all([
+      ghGet("data/services.json"),
+      ghGet("data/gallery.json"),
+      ghGet("data/messages.json")
+    ]);
+    SERVICES=Array.isArray(sv.data)?sv.data:[]; SERVICES_SHA=sv.sha;
+    GALLERY=Array.isArray(ga.data)?ga.data:[]; GALLERY_SHA=ga.sha;
+    MESSAGES=Array.isArray(ms.data)?ms.data:[]; MESSAGES_SHA=ms.sha;
+  } catch(e){ toast("Load error: "+e.message, true); }
 }
+
 function renderAll(){
-  renderServices(); renderGallery(); renderPosts(); renderMessages(); updateStats(); loadSettingsUI();
+  renderServices(); renderGallery(); renderMessages();
+  document.getElementById("statServices").textContent=SERVICES.length;
+  document.getElementById("statGallery").textContent=GALLERY.length;
+  document.getElementById("statMsgs").textContent=MESSAGES.filter(m=>!m.read).length;
 }
 
-/* expose to inline onclick handlers */
-window.editSvc=editSvc; window.delSvc=delSvc;
-window.delGal=delGal;
-window.editPost=editPost; window.delPost=delPost;
-window.markRead=markRead;
+async function init(){ await loadData(); renderAll(); }
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+window.editSvc=editSvc; window.delSvc=delSvc; window.delGal=delGal; window.markRead=markRead;
 </script>
 </body>
 </html>
